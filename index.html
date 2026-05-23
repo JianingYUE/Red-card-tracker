@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Card Tracker</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: rgba(255,255,255,0.08);
+      --card2: rgba(255,255,255,0.12);
+      --text: #f5f5f5;
+      --muted: #a8adb7;
+      --red: #ff4d4f;
+      --green: #37c978;
+      --yellow: #f5c542;
+      --blue: #5b8cff;
+      --border: rgba(255,255,255,0.14);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #2b1b1f 0%, var(--bg) 42%, #090a0d 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 22px 16px 12px;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(18px);
+      background: rgba(15,17,21,0.78);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    h1 { margin: 0; font-size: 24px; letter-spacing: -0.5px; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+    main { padding: 16px; max-width: 980px; margin: 0 auto; }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab, button {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 11px 10px;
+      border-radius: 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .tab.active { background: #b91c1c; border-color: #ef4444; }
+    button.primary { background: #dc2626; border-color: #ef4444; font-weight: 700; }
+    button.secondary { background: var(--card2); }
+    button.danger { background: rgba(255,77,79,0.18); color: #ffb3b3; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    .stat-num { font-size: 28px; font-weight: 800; margin-top: 8px; }
+    .label { color: var(--muted); font-size: 13px; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    input, select, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 6px;
+      font-size: 15px;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    label { display: block; margin: 12px 0; font-size: 14px; color: var(--muted); }
+    select option { color: #111; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .list { display: grid; gap: 10px; margin-top: 12px; }
+    .item { background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+    .item-title { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-weight: 700; }
+    .pill { padding: 4px 8px; border-radius: 99px; font-size: 12px; background: rgba(255,255,255,0.12); color: var(--muted); white-space: nowrap; }
+    .pill.good { color: #b8ffd7; background: rgba(55,201,120,0.16); }
+    .pill.bad { color: #ffc4c4; background: rgba(255,77,79,0.16); }
+    .pill.warn { color: #ffe6a3; background: rgba(245,197,66,0.16); }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .small { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+    .category-score { display: grid; grid-template-columns: 1fr 90px; gap: 8px; align-items: end; }
+    img.thumb { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid var(--border); }
+
+    .report-block { white-space: pre-wrap; line-height: 1.55; color: #e9edf5; }
+
+    @media (max-width: 720px) {
+      .grid, .row { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: repeat(2, 1fr); }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Red Card Tracker</h1>
+    <div class="sub">海底捞员工红卡考核追踪 · 月度对比 · 提升/倒退分析</div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+      <button class="tab" onclick="showTab('employees')">Employees</button>
+      <button class="tab" onclick="showTab('add')">Add Red Card</button>
+      <button class="tab" onclick="showTab('compare')">Compare</button>
+    </div>
+
+    <section id="dashboard" class="section active">
+      <div class="grid">
+        <div class="card"><div class="label">本月考核人数</div><div id="statPeople" class="stat-num">0</div></div>
+        <div class="card"><div class="label">本月平均分</div><div id="statAvg" class="stat-num">-</div></div>
+        <div class="card"><div class="label">本月红卡记录</div><div id="statCards" class="stat-num">0</div></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="item-title">本月重点问题 <span class="pill">自动统计</span></div>
+        <div id="issueList" class="list"></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="item-title">最近记录 <span class="pill">Latest</span></div>
+        <div id="recentList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="employees" class="section">
+      <div class="card">
+        <div class="item-title">添加员工</div>
+        <div class="row">
+          <label>姓名<input id="empName" placeholder="例如 Tom / 小王" /></label>
+          <label>岗位/区域<input id="empRole" placeholder="Server / Bar / Runner" /></label>
+        </div>
+        <button class="primary" onclick="addEmployee()">添加员工</button>
+      </div>
+      <div id="employeeList" class="list"></div>
+    </section>
+
+    <section id="add" class="section">
+      <div class="card">
+        <div class="item-title">添加红卡考核</div>
+        <div class="row">
+          <label>员工<select id="evalEmployee"></select></label>
+          <label>月份<input id="evalMonth" type="month" /></label>
+        </div>
+        <div class="row">
+          <label>总分<input id="evalScore" type="number" min="0" max="100" placeholder="0-100" /></label>
+          <label>红卡类别
+            <select id="evalCategory">
+              <option>仪容仪表</option>
+              <option>服务态度</option>
+              <option>桌面维护</option>
+              <option>补汤/补水/换盘</option>
+              <option>上菜确认</option>
+              <option>Walkie回应</option>
+              <option>空闲时间状态</option>
+              <option>团队配合</option>
+              <option>客诉问题</option>
+              <option>SOP执行</option>
+            </select>
+          </label>
+        </div>
+        <label>单项分数变化参考<input id="evalCategoryScore" type="number" min="0" max="100" placeholder="该项目本次表现分，可选" /></label>
+        <label>原因<textarea id="evalReason" placeholder="例如：客人需要加汤时没有主动观察，leader提醒后才处理。"></textarea></label>
+        <label>改进建议<textarea id="evalSuggestion" placeholder="例如：下月重点观察桌面维护和主动补汤。"></textarea></label>
+        <label>上传/拍摄红卡照片<input id="evalImage" type="file" accept="image/*" /></label>
+        <button class="primary" onclick="addEvaluation()">保存记录</button>
+      </div>
+    </section>
+
+    <section id="compare" class="section">
+      <div class="card">
+        <div class="item-title">月度对比</div>
+        <div class="row">
+          <label>员工<select id="compareEmployee"></select></label>
+          <label>目标月份<input id="compareMonth" type="month" /></label>
+        </div>
+        <button class="primary" onclick="generateReport()">生成对比报告</button>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="item-title">分析结果 <span class="pill">Report</span></div>
+        <div id="report" class="report-block small">选择员工和月份后生成。</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const categories = ["仪容仪表", "服务态度", "桌面维护", "补汤/补水/换盘", "上菜确认", "Walkie回应", "空闲时间状态", "团队配合", "客诉问题", "SOP执行"];
+    let employees = JSON.parse(localStorage.getItem('rc_employees') || '[]');
+    let evaluations = JSON.parse(localStorage.getItem('rc_evaluations') || '[]');
+
+    const now = new Date();
+    const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    document.getElementById('evalMonth').value = thisMonth;
+    document.getElementById('compareMonth').value = thisMonth;
+
+    function save() {
+      localStorage.setItem('rc_employees', JSON.stringify(employees));
+      localStorage.setItem('rc_evaluations', JSON.stringify(evaluations));
+      renderAll();
+    }
+
+    function showTab(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function addEmployee() {
+      const name = document.getElementById('empName').value.trim();
+      const role = document.getElementById('empRole').value.trim();
+      if (!name) return alert('请输入员工姓名');
+      employees.push({ id: Date.now().toString(), name, role, createdAt: new Date().toISOString() });
+      document.getElementById('empName').value = '';
+      document.getElementById('empRole').value = '';
+      save();
+    }
+
+    function deleteEmployee(id) {
+      if (!confirm('删除员工会同时删除该员工记录，确定吗？')) return;
+      employees = employees.filter(e => e.id !== id);
+      evaluations = evaluations.filter(e => e.employeeId !== id);
+      save();
+    }
+
+    function addEvaluation() {
+      const employeeId = document.getElementById('evalEmployee').value;
+      if (!employeeId) return alert('请先添加员工');
+      const month = document.getElementById('evalMonth').value;
+      const score = Number(document.getElementById('evalScore').value);
+      const category = document.getElementById('evalCategory').value;
+      const categoryScore = document.getElementById('evalCategoryScore').value ? Number(document.getElementById('evalCategoryScore').value) : null;
+      const reason = document.getElementById('evalReason').value.trim();
+      const suggestion = document.getElementById('evalSuggestion').value.trim();
+      const file = document.getElementById('evalImage').files[0];
+      if (!month || Number.isNaN(score)) return alert('请填写月份和分数');
+
+      const finish = (imageData) => {
+        evaluations.push({ id: Date.now().toString(), employeeId, month, score, category, categoryScore, reason, suggestion, imageData, createdAt: new Date().toISOString() });
+        document.getElementById('evalScore').value = '';
+        document.getElementById('evalCategoryScore').value = '';
+        document.getElementById('evalReason').value = '';
+        document.getElementById('evalSuggestion').value = '';
+        document.getElementById('evalImage').value = '';
+        save();
+        alert('已保存红卡记录');
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => finish(e.target.result);
+        reader.readAsDataURL(file);
+      } else finish(null);
+    }
+
+    function monthRecords(month, employeeId = null) {
+      return evaluations.filter(e => e.month === month && (!employeeId || e.employeeId === employeeId));
+    }
+
+    function avgScore(records) {
+      if (!records.length) return null;
+      return Math.round(records.reduce((s, r) => s + Number(r.score || 0), 0) / records.length);
+    }
+
+    function previousMonth(month) {
+      const [y, m] = month.split('-').map(Number);
+      const d = new Date(y, m - 2, 1);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+
+    function renderSelectors() {
+      const opts = employees.map(e => `<option value="${e.id}">${e.name}${e.role ? ' · ' + e.role : ''}</option>`).join('');
+      document.getElementById('evalEmployee').innerHTML = opts;
+      document.getElementById('compareEmployee').innerHTML = opts;
+    }
+
+    function renderEmployees() {
+      const box = document.getElementById('employeeList');
+      if (!employees.length) {
+        box.innerHTML = '<div class="item small">还没有员工。先添加员工，再录入红卡。</div>';
+        return;
+      }
+      box.innerHTML = employees.map(emp => {
+        const recs = evaluations.filter(e => e.employeeId === emp.id).sort((a,b)=>b.month.localeCompare(a.month));
+        const current = avgScore(monthRecords(thisMonth, emp.id));
+        const prev = avgScore(monthRecords(previousMonth(thisMonth), emp.id));
+        let trend = '<span class="pill">无数据</span>';
+        if (current !== null && prev !== null) {
+          const diff = current - prev;
+          trend = diff > 0 ? `<span class="pill good">提升 +${diff}</span>` : diff < 0 ? `<span class="pill bad">下降 ${diff}</span>` : '<span class="pill warn">持平</span>';
+        }
+        return `<div class="item">
+          <div class="item-title"><span>${emp.name}</span>${trend}</div>
+          <div class="small">${emp.role || '未填写岗位'} · 记录数：${recs.length}</div>
+          <div class="actions"><button class="danger" onclick="deleteEmployee('${emp.id}')">删除</button></div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderDashboard() {
+      const recs = monthRecords(thisMonth);
+      const people = new Set(recs.map(r => r.employeeId)).size;
+      document.getElementById('statPeople').textContent = people;
+      document.getElementById('statAvg').textContent = avgScore(recs) ?? '-';
+      document.getElementById('statCards').textContent = recs.length;
+
+      const counts = {};
+      recs.forEach(r => counts[r.category] = (counts[r.category] || 0) + 1);
+      const issues = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+      document.getElementById('issueList').innerHTML = issues.length ? issues.map(([k,v]) => `<div class="item"><div class="item-title">${k}<span class="pill bad">${v}次</span></div></div>`).join('') : '<div class="item small">本月暂无问题记录。</div>';
+
+      const recent = [...evaluations].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
+      document.getElementById('recentList').innerHTML = recent.length ? recent.map(r => {
+        const emp = employees.find(e => e.id === r.employeeId);
+        return `<div class="item">
+          <div class="item-title">${emp ? emp.name : '已删除员工'} <span class="pill">${r.month} · ${r.score}</span></div>
+          <div class="small">${r.category}：${r.reason || '无原因备注'}</div>
+          ${r.imageData ? `<img class="thumb" src="${r.imageData}" />` : ''}
+        </div>`;
+      }).join('') : '<div class="item small">暂无红卡记录。</div>';
+    }
+
+    function generateReport() {
+      const empId = document.getElementById('compareEmployee').value;
+      const month = document.getElementById('compareMonth').value;
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+      const prev = previousMonth(month);
+      const curRecs = monthRecords(month, empId);
+      const prevRecs = monthRecords(prev, empId);
+      const curAvg = avgScore(curRecs);
+      const prevAvg = avgScore(prevRecs);
+
+      const curCat = {};
+      const prevCat = {};
+      curRecs.forEach(r => { if (r.categoryScore !== null) curCat[r.category] = r.categoryScore; });
+      prevRecs.forEach(r => { if (r.categoryScore !== null) prevCat[r.category] = r.categoryScore; });
+
+      const improved = [];
+      const declined = [];
+      categories.forEach(c => {
+        if (curCat[c] !== undefined && prevCat[c] !== undefined) {
+          const diff = curCat[c] - prevCat[c];
+          if (diff > 0) improved.push(`${c} +${diff}`);
+          if (diff < 0) declined.push(`${c} ${diff}`);
+        }
+      });
+
+      const repeated = [...new Set(curRecs.map(r=>r.category))].filter(c => prevRecs.some(r => r.category === c));
+      const curReasons = curRecs.map(r => `- ${r.category}: ${r.reason || '无原因备注'}`).join('\n');
+      const suggestions = curRecs.map(r => r.suggestion).filter(Boolean).map(s => `- ${s}`).join('\n');
+
+      let scoreLine = '暂无足够分数数据。';
+      if (curAvg !== null && prevAvg !== null) {
+        const diff = curAvg - prevAvg;
+        scoreLine = `${prev} 平均分 ${prevAvg} → ${month} 平均分 ${curAvg}，${diff > 0 ? '提升 +' + diff : diff < 0 ? '下降 ' + diff : '持平'}。`;
+      } else if (curAvg !== null) scoreLine = `${month} 平均分 ${curAvg}，上月暂无记录。`;
+
+      document.getElementById('report').textContent = `${emp.name} 月度红卡对比报告\n\n${scoreLine}\n\n提升项：\n${improved.length ? improved.map(x=>'🟢 '+x).join('\n') : '暂无可量化提升项'}\n\n倒退项：\n${declined.length ? declined.map(x=>'🔴 '+x).join('\n') : '暂无可量化倒退项'}\n\n连续问题：\n${repeated.length ? repeated.map(x=>'⚠️ '+x).join('\n') : '暂无连续重复问题'}\n\n本月原因记录：\n${curReasons || '暂无'}\n\n下月建议：\n${suggestions || '根据本月主要问题，重点观察主动服务、执行力和回应速度。'}`;
+    }
+
+    function renderAll() {
+      renderSelectors();
+      renderEmployees();
+      renderDashboard();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
