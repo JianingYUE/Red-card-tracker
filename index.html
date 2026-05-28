@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Red Card Tracker</title>
+
   <style>
     :root {
       --bg: #0f1115;
@@ -33,7 +34,7 @@
       position: sticky;
       top: 0;
       backdrop-filter: blur(18px);
-      background: rgba(15,17,21,0.78);
+      background: rgba(15,17,21,0.82);
       border-bottom: 1px solid var(--border);
       z-index: 10;
     }
@@ -52,51 +53,8 @@
 
     main {
       padding: 16px;
-      max-width: 980px;
+      max-width: 920px;
       margin: 0 auto;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .tab, button {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      padding: 11px 10px;
-      border-radius: 14px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .tab.active {
-      background: #b91c1c;
-      border-color: #ef4444;
-    }
-
-    button.primary {
-      background: #dc2626;
-      border-color: #ef4444;
-      font-weight: 700;
-    }
-
-    button.secondary {
-      background: var(--card2);
-    }
-
-    button.danger {
-      background: rgba(255,77,79,0.18);
-      color: #ffb3b3;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
     }
 
     .card {
@@ -105,17 +63,40 @@
       border-radius: 20px;
       padding: 14px;
       box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      margin-bottom: 12px;
     }
 
-    .ai-box {
-      border-color: rgba(91,140,255,0.45);
+    .ai-card {
       background: rgba(91,140,255,0.08);
+      border-color: rgba(91,140,255,0.45);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
     }
 
     .stat-num {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     .label {
@@ -123,12 +104,11 @@
       font-size: 13px;
     }
 
-    .section {
-      display: none;
-    }
-
-    .section.active {
+    label {
       display: block;
+      margin: 10px 0;
+      font-size: 14px;
+      color: var(--muted);
     }
 
     input, select, textarea {
@@ -142,20 +122,39 @@
       font-size: 15px;
     }
 
+    select option {
+      color: #111;
+    }
+
     textarea {
-      min-height: 92px;
+      min-height: 82px;
       resize: vertical;
     }
 
-    label {
-      display: block;
-      margin: 12px 0;
+    button {
+      border: 1px solid var(--border);
+      background: var(--card2);
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 14px;
       font-size: 14px;
-      color: var(--muted);
+      cursor: pointer;
     }
 
-    select option {
-      color: #111;
+    button.primary {
+      background: #dc2626;
+      border-color: #ef4444;
+      font-weight: 700;
+    }
+
+    button.secondary {
+      background: rgba(91,140,255,0.16);
+      border-color: rgba(91,140,255,0.35);
+    }
+
+    button.danger {
+      background: rgba(255,77,79,0.18);
+      color: #ffb3b3;
     }
 
     .row {
@@ -164,25 +163,11 @@
       gap: 10px;
     }
 
-    .list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .item {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-    }
-
-    .item-title {
+    .actions {
       display: flex;
-      justify-content: space-between;
       gap: 8px;
-      align-items: center;
-      font-weight: 700;
+      flex-wrap: wrap;
+      margin-top: 10px;
     }
 
     .pill {
@@ -209,18 +194,62 @@
       background: rgba(245,197,66,0.16);
     }
 
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
     .small {
       font-size: 12px;
       color: var(--muted);
-      margin-top: 6px;
       line-height: 1.45;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .item {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .item-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    details {
+      margin-bottom: 12px;
+    }
+
+    summary {
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 13px 14px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .report-block {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      color: #e9edf5;
     }
 
     .notice {
@@ -230,6 +259,7 @@
       border-radius: 14px;
       padding: 10px;
       line-height: 1.45;
+      margin-top: 10px;
     }
 
     .muted-input {
@@ -249,19 +279,9 @@
       border: 1px solid var(--border);
     }
 
-    .report-block {
-      white-space: pre-wrap;
-      line-height: 1.55;
-      color: #e9edf5;
-    }
-
     @media (max-width: 720px) {
       .grid, .row {
         grid-template-columns: 1fr;
-      }
-
-      .tabs {
-        grid-template-columns: repeat(2, 1fr);
       }
 
       h1 {
@@ -274,161 +294,157 @@
 <body>
   <header>
     <h1>Red Card Tracker</h1>
-    <div class="sub">Employee red card performance tracking · Monthly comparison · Improvement and decline analysis</div>
+    <div class="sub">Simple employee red card tracking · Add record · Compare · AI review</div>
   </header>
 
   <main>
-    <div class="tabs">
-      <button class="tab active" onclick="showTab(event, 'dashboard')">Dashboard</button>
-      <button class="tab" onclick="showTab(event, 'employees')">Employees</button>
-      <button class="tab" onclick="showTab(event, 'add')">Add Red Card</button>
-      <button class="tab" onclick="showTab(event, 'compare')">Compare</button>
-    </div>
+    <section class="card">
+      <div class="title-row">
+        <span>Quick Stats</span>
+        <span class="pill">This Month</span>
+      </div>
 
-    <section id="dashboard" class="section active">
       <div class="grid">
-        <div class="card">
-          <div class="label">Employees Reviewed This Month</div>
+        <div class="stat">
+          <div class="label">Employees Reviewed</div>
           <div id="statPeople" class="stat-num">0</div>
         </div>
 
-        <div class="card">
-          <div class="label">Average Score This Month</div>
+        <div class="stat">
+          <div class="label">Average Score</div>
           <div id="statAvg" class="stat-num">-</div>
         </div>
 
-        <div class="card">
-          <div class="label">Red Card Records This Month</div>
+        <div class="stat">
+          <div class="label">Total Records</div>
           <div id="statCards" class="stat-num">0</div>
         </div>
       </div>
-
-      <div class="card" style="margin-top:12px;">
-        <div class="item-title">
-          Main Issues This Month
-          <span class="pill">Auto Summary</span>
-        </div>
-        <div id="issueList" class="list"></div>
-      </div>
-
-      <div class="card" style="margin-top:12px;">
-        <div class="item-title">
-          Recent Records
-          <span class="pill">Latest</span>
-        </div>
-        <div id="recentList" class="list"></div>
-      </div>
     </section>
 
-    <section id="employees" class="section">
-      <div class="card">
-        <div class="item-title">Add Employee</div>
-
-        <div class="row">
-          <label>
-            Name
-            <input id="empName" placeholder="Example: Tom / Amy" />
-          </label>
-
-          <label>
-            Position / Area
-            <input id="empRole" placeholder="Server / Bar / Runner" />
-          </label>
-        </div>
-
-        <button class="primary" onclick="addEmployee()">Add Employee</button>
+    <section class="card">
+      <div class="title-row">
+        <span>Employee</span>
+        <span class="pill">Step 1</span>
       </div>
 
-      <div id="employeeList" class="list"></div>
-    </section>
-
-    <section id="add" class="section">
-      <div class="card">
-        <div class="item-title">Add Red Card Review</div>
-
-        <div class="row">
-          <label>
-            Employee
-            <select id="evalEmployee"></select>
-          </label>
-
-          <label>
-            Month
-            <input id="evalMonth" type="month" />
-          </label>
-        </div>
-
-        <div class="row">
-          <label>
-            Overall Score
-            <input id="evalScore" type="number" min="0" max="100" placeholder="0-100" />
-          </label>
-
-          <label>
-            Red Card Category
-            <select id="evalCategory">
-              <option>Appearance</option>
-              <option>Service Attitude</option>
-              <option>Table Maintenance</option>
-              <option>Soup / Water / Plate Refill</option>
-              <option>Dish Confirmation</option>
-              <option>Walkie Response</option>
-              <option>Idle Time Behavior</option>
-              <option>Teamwork</option>
-              <option>Guest Complaint</option>
-              <option>SOP Execution</option>
-            </select>
-          </label>
-        </div>
-
+      <div class="row">
         <label>
-          Category Score Reference
-          <input id="evalCategoryScore" type="number" min="0" max="100" placeholder="Optional category score" />
+          Add Employee Name
+          <input id="empName" placeholder="Example: Tom / Amy" />
         </label>
 
         <label>
-          Reason
-          <textarea id="evalReason" placeholder="Example: The guest needed soup refill, but the server did not notice until the leader reminded them."></textarea>
+          Position / Area
+          <input id="empRole" placeholder="Server / Bar / Runner" />
         </label>
-
-        <label>
-          Improvement Suggestion
-          <textarea id="evalSuggestion" placeholder="Example: Focus on table maintenance and proactive soup refill next month."></textarea>
-        </label>
-
-        <label>
-          Upload / Take Red Card Photo
-          <input id="evalImage" type="file" accept="image/*" />
-        </label>
-
-        <button class="primary" onclick="addEvaluation()">Save Record</button>
       </div>
+
+      <button class="primary" onclick="addEmployee()">Add Employee</button>
+
+      <label>
+        Select Employee
+        <select id="evalEmployee"></select>
+      </label>
     </section>
 
-    <section id="compare" class="section">
-      <div class="card">
-        <div class="item-title">Monthly Comparison</div>
+    <section class="card">
+      <div class="title-row">
+        <span>Add Red Card Record</span>
+        <span class="pill">Step 2</span>
+      </div>
 
-        <div class="row">
-          <label>
-            Employee
-            <select id="compareEmployee"></select>
-          </label>
+      <div class="row">
+        <label>
+          Month
+          <input id="evalMonth" type="month" />
+        </label>
 
-          <label>
-            Target Month
-            <input id="compareMonth" type="month" />
-          </label>
-        </div>
+        <label>
+          Overall Score
+          <input id="evalScore" type="number" min="0" max="100" placeholder="0-100" />
+        </label>
+      </div>
 
-        <div class="actions">
-          <button class="primary" onclick="generateReport()">Generate Local Report</button>
-          <button class="secondary" id="aiCompareBtn" onclick="generateAIReport()">AI Direct Comparison</button>
-        </div>
+      <div class="row">
+        <label>
+          Category
+          <select id="evalCategory">
+            <option>Appearance</option>
+            <option>Service Attitude</option>
+            <option>Table Maintenance</option>
+            <option>Soup / Water / Plate Refill</option>
+            <option>Dish Confirmation</option>
+            <option>Walkie Response</option>
+            <option>Idle Time Behavior</option>
+            <option>Teamwork</option>
+            <option>Guest Complaint</option>
+            <option>SOP Execution</option>
+          </select>
+        </label>
 
-        <div class="notice small" style="margin-top:12px;">
-          AI comparison will send this employee's target month and previous month red card records to the OpenAI API.
-          Your API key is saved only in this browser's localStorage. For public team use, a backend proxy is strongly recommended.
+        <label>
+          Category Score
+          <input id="evalCategoryScore" type="number" min="0" max="100" placeholder="Optional" />
+        </label>
+      </div>
+
+      <label>
+        Reason
+        <textarea id="evalReason" placeholder="Example: The guest needed soup refill, but the server did not notice until the leader reminded them."></textarea>
+      </label>
+
+      <label>
+        Improvement Suggestion
+        <textarea id="evalSuggestion" placeholder="Example: Focus on table maintenance and proactive soup refill next month."></textarea>
+      </label>
+
+      <label>
+        Upload / Take Red Card Photo
+        <input id="evalImage" type="file" accept="image/*" />
+      </label>
+
+      <button class="primary" onclick="addEvaluation()">Save Record</button>
+    </section>
+
+    <section class="card ai-card">
+      <div class="title-row">
+        <span>Compare This Employee</span>
+        <span class="pill">Step 3</span>
+      </div>
+
+      <div class="row">
+        <label>
+          Target Month
+          <input id="compareMonth" type="month" />
+        </label>
+
+        <label>
+          AI Tone
+          <select id="aiTone">
+            <option value="leader">Direct Leader Feedback</option>
+            <option value="soft">Supportive Training Tone</option>
+            <option value="strict">Strict Review Tone</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="primary" onclick="generateReport()">Local Compare</button>
+        <button class="secondary" id="aiCompareBtn" onclick="generateAIReport()">AI Compare</button>
+      </div>
+
+      <details>
+        <summary>
+          <div class="summary-card" style="margin-top:12px;">
+            <span>AI Settings</span>
+            <span class="pill">Optional</span>
+          </div>
+        </summary>
+
+        <div class="notice small">
+          AI comparison sends this employee's target month and previous month red card records to OpenAI.
+          Your API key is saved only in this browser's localStorage. For public team use, use a backend proxy.
         </div>
 
         <label>
@@ -436,39 +452,69 @@
           <input id="aiApiKey" class="muted-input" type="password" placeholder="sk-..." />
         </label>
 
-        <div class="row">
-          <label>
-            AI Model
-            <input id="aiModel" class="muted-input" value="gpt-4o-mini" />
-          </label>
-
-          <label>
-            AI Tone
-            <select id="aiTone">
-              <option value="leader">Direct Leader Feedback</option>
-              <option value="soft">Supportive Training Tone</option>
-              <option value="strict">Strict Review Tone</option>
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:12px;">
-        <div class="item-title">
-          Local Analysis Result
-          <span class="pill">Report</span>
-        </div>
-        <div id="report" class="report-block small">Select an employee and target month to generate a report.</div>
-      </div>
-
-      <div class="card ai-box" style="margin-top:12px;">
-        <div class="item-title">
-          AI Direct Comparison Result
-          <span class="pill">AI</span>
-        </div>
-        <div id="aiReport" class="report-block small">Click “AI Direct Comparison” to generate an AI-based report.</div>
-      </div>
+        <label>
+          AI Model
+          <input id="aiModel" class="muted-input" value="gpt-4o-mini" />
+        </label>
+      </details>
     </section>
+
+    <section class="card">
+      <div class="title-row">
+        <span>Local Result</span>
+        <span class="pill">Auto</span>
+      </div>
+
+      <div id="report" class="report-block small">Select an employee and click Local Compare.</div>
+    </section>
+
+    <section class="card ai-card">
+      <div class="title-row">
+        <span>AI Result</span>
+        <span class="pill">AI</span>
+      </div>
+
+      <div id="aiReport" class="report-block small">Click AI Compare to generate an AI-based review.</div>
+    </section>
+
+    <details>
+      <summary>
+        <div class="summary-card">
+          <span>Recent Records</span>
+          <span class="pill">Tap to Open</span>
+        </div>
+      </summary>
+
+      <div class="card">
+        <div id="recentList" class="list"></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <div class="summary-card">
+          <span>Main Issues This Month</span>
+          <span class="pill">Tap to Open</span>
+        </div>
+      </summary>
+
+      <div class="card">
+        <div id="issueList" class="list"></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <div class="summary-card">
+          <span>Employee List</span>
+          <span class="pill">Tap to Open</span>
+        </div>
+      </summary>
+
+      <div class="card">
+        <div id="employeeList" class="list"></div>
+      </div>
+    </details>
   </main>
 
   <script>
@@ -495,30 +541,14 @@
     document.getElementById('compareMonth').value = thisMonth;
 
     document.addEventListener('DOMContentLoaded', () => {
-      const savedKey = localStorage.getItem('rc_openai_key') || '';
-      const savedModel = localStorage.getItem('rc_ai_model') || 'gpt-4o-mini';
-
-      document.getElementById('aiApiKey').value = savedKey;
-      document.getElementById('aiModel').value = savedModel;
+      document.getElementById('aiApiKey').value = localStorage.getItem('rc_openai_key') || '';
+      document.getElementById('aiModel').value = localStorage.getItem('rc_ai_model') || 'gpt-4o-mini';
     });
 
     function save() {
       localStorage.setItem('rc_employees', JSON.stringify(employees));
       localStorage.setItem('rc_evaluations', JSON.stringify(evaluations));
       renderAll();
-    }
-
-    function showTab(event, id) {
-      document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-      });
-
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-
-      document.getElementById(id).classList.add('active');
-      event.target.classList.add('active');
     }
 
     function addEmployee() {
@@ -565,7 +595,7 @@
       const file = document.getElementById('evalImage').files[0];
 
       if (!employeeId) {
-        alert('Please add an employee first.');
+        alert('Please add or select an employee first.');
         return;
       }
 
@@ -644,22 +674,18 @@
       }).join('');
 
       document.getElementById('evalEmployee').innerHTML = options;
-      document.getElementById('compareEmployee').innerHTML = options;
     }
 
     function renderEmployees() {
       const box = document.getElementById('employeeList');
 
       if (!employees.length) {
-        box.innerHTML = '<div class="item small">No employees yet. Add an employee first, then add red card records.</div>';
+        box.innerHTML = '<div class="item small">No employees yet.</div>';
         return;
       }
 
       box.innerHTML = employees.map(employee => {
-        const records = evaluations
-          .filter(record => record.employeeId === employee.id)
-          .sort((a, b) => b.month.localeCompare(a.month));
-
+        const records = evaluations.filter(record => record.employeeId === employee.id);
         const currentAverage = avgScore(monthRecords(thisMonth, employee.id));
         const previousAverage = avgScore(monthRecords(previousMonth(thisMonth), employee.id));
 
@@ -753,8 +779,12 @@
         : '<div class="item small">No red card records yet.</div>';
     }
 
+    function getSelectedEmployeeId() {
+      return document.getElementById('evalEmployee').value;
+    }
+
     function generateReport() {
-      const employeeId = document.getElementById('compareEmployee').value;
+      const employeeId = getSelectedEmployeeId();
       const month = document.getElementById('compareMonth').value;
       const employee = employees.find(emp => emp.id === employeeId);
 
@@ -938,7 +968,7 @@ ${JSON.stringify(context, null, 2)}
     async function generateAIReport() {
       generateReport();
 
-      const employeeId = document.getElementById('compareEmployee').value;
+      const employeeId = getSelectedEmployeeId();
       const month = document.getElementById('compareMonth').value;
       const key = document.getElementById('aiApiKey').value.trim();
       const model = document.getElementById('aiModel').value.trim() || 'gpt-4o-mini';
@@ -947,7 +977,7 @@ ${JSON.stringify(context, null, 2)}
       const button = document.getElementById('aiCompareBtn');
 
       if (!key) {
-        aiBox.textContent = 'Please enter your OpenAI API key first.';
+        aiBox.textContent = 'Please enter your OpenAI API key first in AI Settings.';
         return;
       }
 
@@ -1006,7 +1036,7 @@ Possible reasons:
 - For public deployment, direct frontend API calls may not be reliable.`;
       } finally {
         button.classList.remove('loading');
-        button.textContent = 'AI Direct Comparison';
+        button.textContent = 'AI Compare';
       }
     }
 
