@@ -4,39 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Red Card Tracker</title>
-
   <style>
     :root {
       --bg: #0f1115;
+      --bg2: #090a0d;
       --card: rgba(255,255,255,0.08);
       --card2: rgba(255,255,255,0.12);
       --text: #f5f5f5;
       --muted: #a8adb7;
-      --red: #ff4d4f;
+      --red: #ef4444;
       --green: #37c978;
       --yellow: #f5c542;
       --blue: #5b8cff;
       --border: rgba(255,255,255,0.14);
+      --shadow: 0 12px 30px rgba(0,0,0,0.22);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #2b1b1f 0%, var(--bg) 42%, #090a0d 100%);
-      color: var(--text);
       min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #2b1b1f 0%, var(--bg) 42%, var(--bg2) 100%);
+      color: var(--text);
     }
 
     header {
-      padding: 22px 16px 12px;
       position: sticky;
       top: 0;
+      z-index: 20;
+      padding: 22px 16px 12px;
+      background: rgba(15,17,21,0.86);
       backdrop-filter: blur(18px);
-      background: rgba(15,17,21,0.82);
       border-bottom: 1px solid var(--border);
-      z-index: 10;
     }
 
     h1 {
@@ -49,12 +50,13 @@
       color: var(--muted);
       font-size: 13px;
       margin-top: 4px;
+      line-height: 1.4;
     }
 
     main {
-      padding: 16px;
-      max-width: 920px;
+      max-width: 960px;
       margin: 0 auto;
+      padding: 16px;
     }
 
     .card {
@@ -62,8 +64,8 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
       margin-bottom: 12px;
+      box-shadow: var(--shadow);
     }
 
     .ai-card {
@@ -76,13 +78,19 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 8px;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
@@ -95,11 +103,11 @@
 
     .stat-num {
       font-size: 26px;
-      font-weight: 800;
+      font-weight: 900;
       margin-top: 6px;
     }
 
-    .label {
+    .label, label {
       color: var(--muted);
       font-size: 13px;
     }
@@ -107,8 +115,6 @@
     label {
       display: block;
       margin: 10px 0;
-      font-size: 14px;
-      color: var(--muted);
     }
 
     input, select, textarea {
@@ -120,16 +126,16 @@
       padding: 12px;
       margin-top: 6px;
       font-size: 15px;
+      outline: none;
     }
 
-    select option {
-      color: #111;
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(91,140,255,0.7);
+      box-shadow: 0 0 0 3px rgba(91,140,255,0.15);
     }
 
-    textarea {
-      min-height: 82px;
-      resize: vertical;
-    }
+    select option { color: #111; }
+    textarea { min-height: 82px; resize: vertical; }
 
     button {
       border: 1px solid var(--border);
@@ -139,12 +145,16 @@
       border-radius: 14px;
       font-size: 14px;
       cursor: pointer;
+      transition: 0.15s ease;
     }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     button.primary {
       background: #dc2626;
       border-color: #ef4444;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     button.secondary {
@@ -155,12 +165,6 @@
     button.danger {
       background: rgba(255,77,79,0.18);
       color: #ffb3b3;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
     }
 
     .actions {
@@ -177,27 +181,37 @@
       background: rgba(255,255,255,0.12);
       color: var(--muted);
       white-space: nowrap;
+      font-weight: 700;
     }
 
-    .pill.good {
-      color: #b8ffd7;
-      background: rgba(55,201,120,0.16);
-    }
-
-    .pill.bad {
-      color: #ffc4c4;
-      background: rgba(255,77,79,0.16);
-    }
-
-    .pill.warn {
-      color: #ffe6a3;
-      background: rgba(245,197,66,0.16);
-    }
+    .pill.good { color: #b8ffd7; background: rgba(55,201,120,0.16); }
+    .pill.bad { color: #ffc4c4; background: rgba(255,77,79,0.16); }
+    .pill.warn { color: #ffe6a3; background: rgba(245,197,66,0.16); }
 
     .small {
       font-size: 12px;
       color: var(--muted);
       line-height: 1.45;
+    }
+
+    .notice {
+      color: #c9d6ff;
+      background: rgba(91,140,255,0.10);
+      border: 1px solid rgba(91,140,255,0.25);
+      border-radius: 14px;
+      padding: 10px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .warn-box {
+      color: #ffe6a3;
+      background: rgba(245,197,66,0.10);
+      border: 1px solid rgba(245,197,66,0.25);
+      border-radius: 14px;
+      padding: 10px;
+      line-height: 1.45;
+      margin-top: 10px;
     }
 
     .list {
@@ -218,32 +232,7 @@
       justify-content: space-between;
       gap: 8px;
       align-items: center;
-      font-weight: 700;
-    }
-
-    details {
-      margin-bottom: 12px;
-    }
-
-    summary {
-      cursor: pointer;
-      user-select: none;
-      list-style: none;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .summary-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 13px 14px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-weight: 800;
     }
 
     .report-block {
@@ -252,24 +241,19 @@
       color: #e9edf5;
     }
 
-    .notice {
-      color: #c9d6ff;
-      background: rgba(91,140,255,0.10);
-      border: 1px solid rgba(91,140,255,0.25);
-      border-radius: 14px;
-      padding: 10px;
-      line-height: 1.45;
-      margin-top: 10px;
-    }
+    details { margin-bottom: 12px; }
+    summary { cursor: pointer; list-style: none; user-select: none; }
+    summary::-webkit-details-marker { display: none; }
 
-    .muted-input {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 13px;
-    }
-
-    .loading {
-      opacity: 0.72;
-      pointer-events: none;
+    .summary-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 13px 14px;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     img.thumb {
@@ -279,658 +263,726 @@
       border: 1px solid var(--border);
     }
 
-    @media (max-width: 720px) {
-      .grid, .row {
-        grid-template-columns: 1fr;
-      }
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
 
-      h1 {
-        font-size: 22px;
-      }
+    .compact-label { margin: 4px 0; }
+
+    .muted-input {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 720px) {
+      main { padding: 12px; }
+      .grid, .row, .cat-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 22px; }
+      button { width: 100%; }
+      .actions { display: grid; grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
-  <header>
-    <h1>Red Card Tracker</h1>
-    <div class="sub">Simple employee red card tracking · Add record · Compare · AI review</div>
-  </header>
+<header>
+  <h1>Red Card Tracker</h1>
+  <div class="sub">Photo upload · Local storage · Supabase sync · Local compare · AI red card review</div>
+</header>
 
-  <main>
-    <section class="card">
-      <div class="title-row">
-        <span>Quick Stats</span>
-        <span class="pill">This Month</span>
+<main>
+  <section class="card">
+    <div class="title-row">
+      <span>Quick Stats</span>
+      <span class="pill">This Month</span>
+    </div>
+    <div class="grid">
+      <div class="stat">
+        <div class="label">Employees Reviewed</div>
+        <div id="statPeople" class="stat-num">0</div>
       </div>
-
-      <div class="grid">
-        <div class="stat">
-          <div class="label">Employees Reviewed</div>
-          <div id="statPeople" class="stat-num">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="label">Average Score</div>
-          <div id="statAvg" class="stat-num">-</div>
-        </div>
-
-        <div class="stat">
-          <div class="label">Total Records</div>
-          <div id="statCards" class="stat-num">0</div>
-        </div>
+      <div class="stat">
+        <div class="label">Average Score</div>
+        <div id="statAvg" class="stat-num">-</div>
       </div>
-    </section>
-
-    <section class="card">
-      <div class="title-row">
-        <span>Employee</span>
-        <span class="pill">Step 1</span>
+      <div class="stat">
+        <div class="label">Total Records</div>
+        <div id="statCards" class="stat-num">0</div>
       </div>
+    </div>
+  </section>
 
-      <div class="row">
-        <label>
-          Add Employee Name
-          <input id="empName" placeholder="Example: Tom / Amy" />
-        </label>
+  <section class="card">
+    <div class="title-row">
+      <span>Employee</span>
+      <span class="pill">Step 1</span>
+    </div>
 
-        <label>
-          Position / Area
-          <input id="empRole" placeholder="Server / Bar / Runner" />
-        </label>
-      </div>
+    <div class="row">
+      <label>
+        Add Employee Name
+        <input id="empName" placeholder="Example: Nicole / Alcan" />
+      </label>
+      <label>
+        Position / Area
+        <input id="empRole" placeholder="Server / Bar / Runner" />
+      </label>
+    </div>
 
+    <div class="actions">
       <button class="primary" onclick="addEmployee()">Add Employee</button>
+    </div>
 
+    <label>
+      Select Employee
+      <select id="employeeSelect"></select>
+    </label>
+  </section>
+
+  <section class="card">
+    <div class="title-row">
+      <span>Upload Red Card</span>
+      <span class="pill">Step 2</span>
+    </div>
+
+    <div class="row">
       <label>
-        Select Employee
-        <select id="evalEmployee"></select>
+        Review Month
+        <input id="month" type="month" />
       </label>
-    </section>
-
-    <section class="card">
-      <div class="title-row">
-        <span>Add Red Card Record</span>
-        <span class="pill">Step 2</span>
-      </div>
-
-      <div class="row">
-        <label>
-          Month
-          <input id="evalMonth" type="month" />
-        </label>
-
-        <label>
-          Overall Score
-          <input id="evalScore" type="number" min="0" max="100" placeholder="0-100" />
-        </label>
-      </div>
-
-      <div class="row">
-        <label>
-          Category
-          <select id="evalCategory">
-            <option>Appearance</option>
-            <option>Service Attitude</option>
-            <option>Table Maintenance</option>
-            <option>Soup / Water / Plate Refill</option>
-            <option>Dish Confirmation</option>
-            <option>Walkie Response</option>
-            <option>Idle Time Behavior</option>
-            <option>Teamwork</option>
-            <option>Guest Complaint</option>
-            <option>SOP Execution</option>
-          </select>
-        </label>
-
-        <label>
-          Category Score
-          <input id="evalCategoryScore" type="number" min="0" max="100" placeholder="Optional" />
-        </label>
-      </div>
-
-      <label>
-        Reason
-        <textarea id="evalReason" placeholder="Example: The guest needed soup refill, but the server did not notice until the leader reminded them."></textarea>
-      </label>
-
-      <label>
-        Improvement Suggestion
-        <textarea id="evalSuggestion" placeholder="Example: Focus on table maintenance and proactive soup refill next month."></textarea>
-      </label>
-
       <label>
         Upload / Take Red Card Photo
-        <input id="evalImage" type="file" accept="image/*" />
+        <input id="photo" type="file" accept="image/*" />
       </label>
+    </div>
 
-      <button class="primary" onclick="addEvaluation()">Save Record</button>
-    </section>
+    <div class="actions">
+      <button class="secondary" onclick="previewPhoto()">Preview Photo</button>
+      <button class="secondary" onclick="aiParsePhoto()">AI Parse Photo</button>
+    </div>
 
+    <div id="photoPreview"></div>
+
+    <div class="notice small">
+      AI Parse Photo reads the uploaded red card image and tries to fill employee name, scores, notes, and assessor. Please review the result before saving.
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="title-row">
+      <span>Record Details</span>
+      <span class="pill">Review Before Save</span>
+    </div>
+
+    <div class="row">
+      <label>
+        Total Score
+        <input id="score" type="number" min="0" max="100" placeholder="0-100" />
+      </label>
+      <label>
+        Assessor
+        <input id="assessor" placeholder="Who reviewed this red card?" />
+      </label>
+    </div>
+
+    <label>Category Scores</label>
+    <div id="categoryInputs" class="cat-grid"></div>
+
+    <label>
+      Reason / Deduction Notes
+      <textarea id="reason" placeholder="Main issue or deduction reason"></textarea>
+    </label>
+
+    <label>
+      Improvement Suggestion
+      <textarea id="suggestion" placeholder="Next month coaching focus"></textarea>
+    </label>
+
+    <div class="actions">
+      <button class="primary" onclick="saveRecord()">Save Record</button>
+      <button class="secondary" onclick="localCompare()">Local Compare</button>
+      <button class="secondary" id="aiCompareBtn" onclick="aiCompare()">AI Compare</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="title-row">
+      <span>Local Result</span>
+      <span class="pill">Auto</span>
+    </div>
+    <div id="localReport" class="report-block small">Save records, then click Local Compare.</div>
+  </section>
+
+  <section class="card ai-card">
+    <div class="title-row">
+      <span>AI Result</span>
+      <span class="pill">AI</span>
+    </div>
+    <div id="aiReport" class="report-block small">Click AI Compare to generate leader-style feedback.</div>
+  </section>
+
+  <details>
+    <summary>
+      <div class="summary-card">
+        <span>AI Settings</span>
+        <span class="pill">Open</span>
+      </div>
+    </summary>
     <section class="card ai-card">
-      <div class="title-row">
-        <span>Compare This Employee</span>
-        <span class="pill">Step 3</span>
+      <div class="warn-box small">
+        This single-file version calls OpenAI directly from the browser. It is fine for your own test, but for public staff use, move the API call to a backend proxy so your API key is not exposed.
       </div>
-
-      <div class="row">
-        <label>
-          Target Month
-          <input id="compareMonth" type="month" />
-        </label>
-
-        <label>
-          AI Tone
-          <select id="aiTone">
-            <option value="leader">Direct Leader Feedback</option>
-            <option value="soft">Supportive Training Tone</option>
-            <option value="strict">Strict Review Tone</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="actions">
-        <button class="primary" onclick="generateReport()">Local Compare</button>
-        <button class="secondary" id="aiCompareBtn" onclick="generateAIReport()">AI Compare</button>
-      </div>
-
-      <details>
-        <summary>
-          <div class="summary-card" style="margin-top:12px;">
-            <span>AI Settings</span>
-            <span class="pill">Optional</span>
-          </div>
-        </summary>
-
-        <div class="notice small">
-          AI comparison sends this employee's target month and previous month red card records to OpenAI.
-          Your API key is saved only in this browser's localStorage. For public team use, use a backend proxy.
-        </div>
-
-        <label>
-          OpenAI API Key
-          <input id="aiApiKey" class="muted-input" type="password" placeholder="sk-..." />
-        </label>
-
-        <label>
-          AI Model
-          <input id="aiModel" class="muted-input" value="gpt-4o-mini" />
-        </label>
-      </details>
+      <label>
+        OpenAI API Key
+        <input id="openaiKey" class="muted-input" type="password" placeholder="sk-..." />
+      </label>
+      <label>
+        AI Model
+        <input id="openaiModel" class="muted-input" value="gpt-4o-mini" />
+      </label>
+      <label>
+        AI Tone
+        <select id="aiTone">
+          <option value="leader">Direct Leader Feedback</option>
+          <option value="soft">Supportive Training Tone</option>
+          <option value="strict">Strict Review Tone</option>
+        </select>
+      </label>
     </section>
+  </details>
 
+  <details>
+    <summary>
+      <div class="summary-card">
+        <span>Cloud Sync Settings</span>
+        <span class="pill">Supabase</span>
+      </div>
+    </summary>
     <section class="card">
-      <div class="title-row">
-        <span>Local Result</span>
-        <span class="pill">Auto</span>
+      <div class="notice small">
+        Local storage always works first. Supabase is optional for backup, cross-device access, and long-term tracking.
       </div>
-
-      <div id="report" class="report-block small">Select an employee and click Local Compare.</div>
+      <label>
+        Supabase URL
+        <input id="supabaseUrl" class="muted-input" placeholder="https://xxxx.supabase.co" />
+      </label>
+      <label>
+        Supabase anon key
+        <input id="supabaseKey" class="muted-input" type="password" placeholder="eyJ..." />
+      </label>
+      <div class="actions">
+        <button class="secondary" onclick="saveCloudSettings()">Save Cloud Settings</button>
+        <button class="secondary" onclick="syncToCloud()">Sync Local to Cloud</button>
+        <button class="secondary" onclick="loadFromCloud()">Load From Cloud</button>
+      </div>
+      <div id="cloudStatus" class="small">Cloud sync is optional.</div>
     </section>
+  </details>
 
-    <section class="card ai-card">
-      <div class="title-row">
-        <span>AI Result</span>
-        <span class="pill">AI</span>
+  <details>
+    <summary>
+      <div class="summary-card">
+        <span>Recent Records</span>
+        <span class="pill">Open</span>
       </div>
-
-      <div id="aiReport" class="report-block small">Click AI Compare to generate an AI-based review.</div>
+    </summary>
+    <section class="card">
+      <div id="recentList" class="list"></div>
     </section>
+  </details>
 
-    <details>
-      <summary>
-        <div class="summary-card">
-          <span>Recent Records</span>
-          <span class="pill">Tap to Open</span>
-        </div>
-      </summary>
-
-      <div class="card">
-        <div id="recentList" class="list"></div>
+  <details>
+    <summary>
+      <div class="summary-card">
+        <span>Main Issues This Month</span>
+        <span class="pill">Open</span>
       </div>
-    </details>
+    </summary>
+    <section class="card">
+      <div id="issueList" class="list"></div>
+    </section>
+  </details>
 
-    <details>
-      <summary>
-        <div class="summary-card">
-          <span>Main Issues This Month</span>
-          <span class="pill">Tap to Open</span>
-        </div>
-      </summary>
-
-      <div class="card">
-        <div id="issueList" class="list"></div>
+  <details>
+    <summary>
+      <div class="summary-card">
+        <span>Employee List</span>
+        <span class="pill">Open</span>
       </div>
-    </details>
+    </summary>
+    <section class="card">
+      <div id="employeeList" class="list"></div>
+    </section>
+  </details>
+</main>
 
-    <details>
-      <summary>
-        <div class="summary-card">
-          <span>Employee List</span>
-          <span class="pill">Tap to Open</span>
-        </div>
-      </summary>
+<script>
+const categories = [
+  "Appearance",
+  "Service Efficiency",
+  "Greeting / Introduction",
+  "Drink Offering",
+  "Dish Confirmation",
+  "Special Needs",
+  "Focus / Discipline",
+  "Serving Service",
+  "Dining Service",
+  "Walkie Response"
+];
 
-      <div class="card">
-        <div id="employeeList" class="list"></div>
-      </div>
-    </details>
-  </main>
+const STORAGE_EMPLOYEES = "rc_v2_employees";
+const STORAGE_RECORDS = "rc_v2_records";
 
-  <script>
-    const categories = [
-      "Appearance",
-      "Service Attitude",
-      "Table Maintenance",
-      "Soup / Water / Plate Refill",
-      "Dish Confirmation",
-      "Walkie Response",
-      "Idle Time Behavior",
-      "Teamwork",
-      "Guest Complaint",
-      "SOP Execution"
-    ];
+let employees = JSON.parse(localStorage.getItem(STORAGE_EMPLOYEES) || "[]");
+let records = JSON.parse(localStorage.getItem(STORAGE_RECORDS) || "[]");
 
-    let employees = JSON.parse(localStorage.getItem('rc_employees') || '[]');
-    let evaluations = JSON.parse(localStorage.getItem('rc_evaluations') || '[]');
+const now = new Date();
+const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-    const now = new Date();
-    const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+function $(id) {
+  return document.getElementById(id);
+}
 
-    document.getElementById('evalMonth').value = thisMonth;
-    document.getElementById('compareMonth').value = thisMonth;
+function uid() {
+  if (crypto && crypto.randomUUID) return crypto.randomUUID();
+  return Date.now().toString() + Math.random().toString(16).slice(2);
+}
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('aiApiKey').value = localStorage.getItem('rc_openai_key') || '';
-      document.getElementById('aiModel').value = localStorage.getItem('rc_ai_model') || 'gpt-4o-mini';
+window.addEventListener("DOMContentLoaded", () => {
+  $("month").value = thisMonth;
+  $("openaiKey").value = localStorage.getItem("rc_openai_key") || "";
+  $("openaiModel").value = localStorage.getItem("rc_openai_model") || "gpt-4o-mini";
+  $("supabaseUrl").value = localStorage.getItem("rc_supabase_url") || "";
+  $("supabaseKey").value = localStorage.getItem("rc_supabase_key") || "";
+  renderCategoryInputs();
+  renderAll();
+});
+
+function saveLocal() {
+  localStorage.setItem(STORAGE_EMPLOYEES, JSON.stringify(employees));
+  localStorage.setItem(STORAGE_RECORDS, JSON.stringify(records));
+  renderAll();
+}
+
+function renderCategoryInputs() {
+  $("categoryInputs").innerHTML = categories.map(category => `
+    <label class="compact-label">
+      ${escapeHtml(category)}
+      <input class="catScore" data-cat="${escapeHtml(category)}" type="number" min="0" max="10" step="0.5" placeholder="0-10" />
+    </label>
+  `).join("");
+}
+
+function addEmployee() {
+  const name = $("empName").value.trim();
+  const role = $("empRole").value.trim();
+
+  if (!name) return alert("Please enter employee name.");
+
+  const existing = employees.find(e => e.name.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    $("employeeSelect").value = existing.id;
+    alert("Employee already exists and has been selected.");
+    return;
+  }
+
+  const employee = {
+    id: uid(),
+    name,
+    role,
+    created_at: new Date().toISOString()
+  };
+
+  employees.push(employee);
+  $("empName").value = "";
+  $("empRole").value = "";
+  saveLocal();
+  $("employeeSelect").value = employee.id;
+}
+
+function deleteEmployee(id) {
+  if (!confirm("Delete this employee and all related local records?")) return;
+  employees = employees.filter(employee => employee.id !== id);
+  records = records.filter(record => record.employee_id !== id);
+  saveLocal();
+}
+
+function getSelectedEmployee() {
+  return employees.find(employee => employee.id === $("employeeSelect").value) || null;
+}
+
+function getOrCreateEmployeeByName(name) {
+  if (!name) return null;
+  let employee = employees.find(e => e.name.toLowerCase() === name.toLowerCase());
+  if (employee) return employee;
+
+  employee = {
+    id: uid(),
+    name,
+    role: "",
+    created_at: new Date().toISOString()
+  };
+  employees.push(employee);
+  saveLocal();
+  return employee;
+}
+
+function previewPhoto() {
+  const file = $("photo").files[0];
+  if (!file) return alert("Please upload a photo first.");
+
+  const reader = new FileReader();
+  reader.onload = event => {
+    $("photoPreview").innerHTML = `<img class="thumb" src="${event.target.result}" alt="Red card preview" />`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function getPhotoData() {
+  return new Promise(resolve => {
+    const file = $("photo").files[0];
+    if (!file) return resolve(null);
+
+    const reader = new FileReader();
+    reader.onload = event => resolve(event.target.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+function setCategoryScores(scoreMap = {}) {
+  document.querySelectorAll(".catScore").forEach(input => {
+    const category = input.dataset.cat;
+    const value = scoreMap[category];
+    input.value = value === undefined || value === null ? "" : value;
+  });
+}
+
+function getCategoryScores() {
+  const scores = {};
+  document.querySelectorAll(".catScore").forEach(input => {
+    if (input.value !== "") {
+      scores[input.dataset.cat] = Number(input.value);
+    }
+  });
+  return scores;
+}
+
+function validateRecordInput() {
+  const employee = getSelectedEmployee();
+  if (!employee) return "Please add or select an employee first.";
+  if (!$("month").value) return "Please select a month.";
+
+  const total = $("score").value;
+  if (total !== "") {
+    const score = Number(total);
+    if (Number.isNaN(score) || score < 0 || score > 100) return "Total score must be between 0 and 100.";
+  }
+
+  for (const input of document.querySelectorAll(".catScore")) {
+    if (input.value !== "") {
+      const score = Number(input.value);
+      if (Number.isNaN(score) || score < 0 || score > 10) {
+        return "Each category score must be between 0 and 10.";
+      }
+    }
+  }
+
+  return null;
+}
+
+async function aiParsePhoto() {
+  const key = $("openaiKey").value.trim();
+  const model = $("openaiModel").value.trim() || "gpt-4o-mini";
+  const imageData = await getPhotoData();
+
+  if (!key) return alert("Please enter OpenAI API key in AI Settings.");
+  if (!imageData) return alert("Please upload a red card photo first.");
+
+  localStorage.setItem("rc_openai_key", key);
+  localStorage.setItem("rc_openai_model", model);
+
+  $("photoPreview").innerHTML = `<img class="thumb" src="${imageData}" alt="Red card preview" /><div class="small">AI is parsing the red card...</div>`;
+
+  const prompt = `
+You are extracting data from a restaurant employee red card review photo.
+The form may be handwritten and may include a table of 10 categories.
+
+Return ONLY valid JSON. Do not wrap it in markdown.
+
+JSON schema:
+{
+  "employee_name": "",
+  "assessor": "",
+  "total_score": null,
+  "category_scores": {
+    "Appearance": null,
+    "Service Efficiency": null,
+    "Greeting / Introduction": null,
+    "Drink Offering": null,
+    "Dish Confirmation": null,
+    "Special Needs": null,
+    "Focus / Discipline": null,
+    "Serving Service": null,
+    "Dining Service": null,
+    "Walkie Response": null
+  },
+  "reason": "",
+  "suggestion": ""
+}
+
+Rules:
+- Do not invent missing data.
+- Scores must be numbers.
+- If a value is unclear, use null.
+- Map similar red card items to the closest category.
+- reason should summarize deduction notes and written comments from the card.
+- suggestion should be a practical coaching focus based on the card.
+`.trim();
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model,
+        input: [{
+          role: "user",
+          content: [
+            { type: "input_text", text: prompt },
+            { type: "input_image", image_url: imageData }
+          ]
+        }],
+        temperature: 0.1
+      })
     });
 
-    function save() {
-      localStorage.setItem('rc_employees', JSON.stringify(employees));
-      localStorage.setItem('rc_evaluations', JSON.stringify(evaluations));
-      renderAll();
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || "OpenAI request failed.");
+
+    const text = extractText(data);
+    const parsed = safeParseJson(text);
+
+    if (!parsed) throw new Error("AI returned text, but it was not valid JSON.");
+
+    if (parsed.employee_name) {
+      const employee = getOrCreateEmployeeByName(String(parsed.employee_name).trim());
+      if (employee) $("employeeSelect").value = employee.id;
     }
 
-    function addEmployee() {
-      const name = document.getElementById('empName').value.trim();
-      const role = document.getElementById('empRole').value.trim();
+    $("score").value = parsed.total_score ?? "";
+    $("assessor").value = parsed.assessor || "";
+    $("reason").value = parsed.reason || "";
+    $("suggestion").value = parsed.suggestion || "";
+    setCategoryScores(parsed.category_scores || {});
 
-      if (!name) {
-        alert('Please enter the employee name.');
-        return;
-      }
+    saveLocal();
+    $("photoPreview").innerHTML = `<img class="thumb" src="${imageData}" alt="Red card preview" /><div class="small">AI parse completed. Please review the fields before saving.</div>`;
+  } catch (error) {
+    $("photoPreview").innerHTML = `<img class="thumb" src="${imageData}" alt="Red card preview" /><div class="small">AI parse failed: ${escapeHtml(error.message)}</div>`;
+  }
+}
 
-      employees.push({
-        id: Date.now().toString(),
-        name,
-        role,
-        createdAt: new Date().toISOString()
-      });
+async function saveRecord() {
+  const error = validateRecordInput();
+  if (error) return alert(error);
 
-      document.getElementById('empName').value = '';
-      document.getElementById('empRole').value = '';
+  const employee = getSelectedEmployee();
+  const imageData = await getPhotoData();
+  const totalScore = $("score").value === "" ? null : Number($("score").value);
 
-      save();
+  const record = {
+    id: uid(),
+    employee_id: employee.id,
+    employee_name: employee.name,
+    month: $("month").value,
+    total_score: totalScore,
+    category_scores: getCategoryScores(),
+    reason: $("reason").value.trim(),
+    suggestion: $("suggestion").value.trim(),
+    assessor: $("assessor").value.trim(),
+    image_data: imageData || "",
+    ai_review: "",
+    created_at: new Date().toISOString()
+  };
+
+  records.push(record);
+  saveLocal();
+  clearRecordForm();
+  alert("Record saved locally.");
+}
+
+function clearRecordForm() {
+  $("score").value = "";
+  $("assessor").value = "";
+  $("reason").value = "";
+  $("suggestion").value = "";
+  $("photo").value = "";
+  $("photoPreview").innerHTML = "";
+  setCategoryScores({});
+}
+
+function previousMonth(month) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  const date = new Date(year, monthNumber - 2, 1);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function monthRecords(month, employeeId) {
+  return records.filter(record => record.month === month && record.employee_id === employeeId);
+}
+
+function averageTotalScore(list) {
+  const nums = list.map(record => Number(record.total_score)).filter(num => !Number.isNaN(num));
+  if (!nums.length) return null;
+  return Math.round(nums.reduce((sum, num) => sum + num, 0) / nums.length);
+}
+
+function combineCategoryAverage(list) {
+  const result = {};
+  categories.forEach(category => {
+    const nums = list
+      .map(record => record.category_scores?.[category])
+      .filter(value => value !== undefined && value !== null && value !== "")
+      .map(Number)
+      .filter(value => !Number.isNaN(value));
+
+    result[category] = nums.length ? Number((nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(1)) : null;
+  });
+  return result;
+}
+
+function localCompare() {
+  const employee = getSelectedEmployee();
+  if (!employee) {
+    $("localReport").textContent = "Please select an employee.";
+    return;
+  }
+
+  const month = $("month").value;
+  const prev = previousMonth(month);
+  const current = monthRecords(month, employee.id);
+  const previous = monthRecords(prev, employee.id);
+
+  const currentAverage = averageTotalScore(current);
+  const previousAverage = averageTotalScore(previous);
+  const currentCategories = combineCategoryAverage(current);
+  const previousCategories = combineCategoryAverage(previous);
+
+  const improved = [];
+  const declined = [];
+  const repeated = [];
+
+  categories.forEach(category => {
+    if (currentCategories[category] !== null && previousCategories[category] !== null) {
+      const diff = Number((currentCategories[category] - previousCategories[category]).toFixed(1));
+      if (diff > 0) improved.push(`${category} +${diff}`);
+      if (diff < 0) declined.push(`${category} ${diff}`);
     }
 
-    function deleteEmployee(id) {
-      if (!confirm('Deleting this employee will also delete all related records. Continue?')) return;
+    const hasCurrent = current.some(record => record.category_scores?.[category] !== undefined && record.category_scores?.[category] !== null);
+    const hasPrevious = previous.some(record => record.category_scores?.[category] !== undefined && record.category_scores?.[category] !== null);
+    if (hasCurrent && hasPrevious) repeated.push(category);
+  });
 
-      employees = employees.filter(employee => employee.id !== id);
-      evaluations = evaluations.filter(record => record.employeeId !== id);
+  let scoreLine = "Not enough score data.";
+  if (currentAverage !== null && previousAverage !== null) {
+    const diff = currentAverage - previousAverage;
+    scoreLine = `${prev} average ${previousAverage} → ${month} average ${currentAverage}. ${diff > 0 ? "Improved +" + diff : diff < 0 ? "Declined " + diff : "No change"}.`;
+  } else if (currentAverage !== null) {
+    scoreLine = `${month} average score is ${currentAverage}. No previous month record.`;
+  }
 
-      save();
-    }
+  const currentNotes = current.map(record => `- ${record.reason || "No reason entered"}`).join("\n") || "No records.";
+  const suggestions = current.map(record => record.suggestion).filter(Boolean).map(text => `- ${text}`).join("\n") || "Focus on proactive table checks, SOP execution, walkie response, and service details.";
 
-    function addEvaluation() {
-      const employeeId = document.getElementById('evalEmployee').value;
-      const month = document.getElementById('evalMonth').value;
-      const scoreValue = document.getElementById('evalScore').value;
-      const score = Number(scoreValue);
-      const category = document.getElementById('evalCategory').value;
-      const categoryScoreValue = document.getElementById('evalCategoryScore').value;
-      const categoryScore = categoryScoreValue ? Number(categoryScoreValue) : null;
-      const reason = document.getElementById('evalReason').value.trim();
-      const suggestion = document.getElementById('evalSuggestion').value.trim();
-      const file = document.getElementById('evalImage').files[0];
-
-      if (!employeeId) {
-        alert('Please add or select an employee first.');
-        return;
-      }
-
-      if (!month || scoreValue === '' || Number.isNaN(score)) {
-        alert('Please enter the month and overall score.');
-        return;
-      }
-
-      if (score < 0 || score > 100) {
-        alert('The overall score must be between 0 and 100.');
-        return;
-      }
-
-      if (categoryScore !== null && (categoryScore < 0 || categoryScore > 100)) {
-        alert('The category score must be between 0 and 100.');
-        return;
-      }
-
-      const finish = (imageData) => {
-        evaluations.push({
-          id: Date.now().toString(),
-          employeeId,
-          month,
-          score,
-          category,
-          categoryScore,
-          reason,
-          suggestion,
-          imageData,
-          createdAt: new Date().toISOString()
-        });
-
-        document.getElementById('evalScore').value = '';
-        document.getElementById('evalCategoryScore').value = '';
-        document.getElementById('evalReason').value = '';
-        document.getElementById('evalSuggestion').value = '';
-        document.getElementById('evalImage').value = '';
-
-        save();
-        alert('Red card record saved.');
-      };
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = event => finish(event.target.result);
-        reader.readAsDataURL(file);
-      } else {
-        finish(null);
-      }
-    }
-
-    function monthRecords(month, employeeId = null) {
-      return evaluations.filter(record => {
-        return record.month === month && (!employeeId || record.employeeId === employeeId);
-      });
-    }
-
-    function avgScore(records) {
-      if (!records.length) return null;
-
-      return Math.round(
-        records.reduce((sum, record) => sum + Number(record.score || 0), 0) / records.length
-      );
-    }
-
-    function previousMonth(month) {
-      const [year, monthNumber] = month.split('-').map(Number);
-      const date = new Date(year, monthNumber - 2, 1);
-
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    }
-
-    function renderSelectors() {
-      const options = employees.map(employee => {
-        return `<option value="${employee.id}">${employee.name}${employee.role ? ' · ' + employee.role : ''}</option>`;
-      }).join('');
-
-      document.getElementById('evalEmployee').innerHTML = options;
-    }
-
-    function renderEmployees() {
-      const box = document.getElementById('employeeList');
-
-      if (!employees.length) {
-        box.innerHTML = '<div class="item small">No employees yet.</div>';
-        return;
-      }
-
-      box.innerHTML = employees.map(employee => {
-        const records = evaluations.filter(record => record.employeeId === employee.id);
-        const currentAverage = avgScore(monthRecords(thisMonth, employee.id));
-        const previousAverage = avgScore(monthRecords(previousMonth(thisMonth), employee.id));
-
-        let trend = '<span class="pill">No Data</span>';
-
-        if (currentAverage !== null && previousAverage !== null) {
-          const diff = currentAverage - previousAverage;
-
-          if (diff > 0) {
-            trend = `<span class="pill good">Improved +${diff}</span>`;
-          } else if (diff < 0) {
-            trend = `<span class="pill bad">Declined ${diff}</span>`;
-          } else {
-            trend = '<span class="pill warn">No Change</span>';
-          }
-        }
-
-        return `
-          <div class="item">
-            <div class="item-title">
-              <span>${employee.name}</span>
-              ${trend}
-            </div>
-
-            <div class="small">
-              ${employee.role || 'No position entered'} · Records: ${records.length}
-            </div>
-
-            <div class="actions">
-              <button class="danger" onclick="deleteEmployee('${employee.id}')">Delete</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderDashboard() {
-      const records = monthRecords(thisMonth);
-      const peopleCount = new Set(records.map(record => record.employeeId)).size;
-
-      document.getElementById('statPeople').textContent = peopleCount;
-      document.getElementById('statAvg').textContent = avgScore(records) ?? '-';
-      document.getElementById('statCards').textContent = records.length;
-
-      const counts = {};
-
-      records.forEach(record => {
-        counts[record.category] = (counts[record.category] || 0) + 1;
-      });
-
-      const issues = Object.entries(counts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
-
-      document.getElementById('issueList').innerHTML = issues.length
-        ? issues.map(([category, count]) => {
-            return `
-              <div class="item">
-                <div class="item-title">
-                  ${category}
-                  <span class="pill bad">${count} time${count > 1 ? 's' : ''}</span>
-                </div>
-              </div>
-            `;
-          }).join('')
-        : '<div class="item small">No issue records for this month.</div>';
-
-      const recent = [...evaluations]
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 6);
-
-      document.getElementById('recentList').innerHTML = recent.length
-        ? recent.map(record => {
-            const employee = employees.find(emp => emp.id === record.employeeId);
-
-            return `
-              <div class="item">
-                <div class="item-title">
-                  ${employee ? employee.name : 'Deleted Employee'}
-                  <span class="pill">${record.month} · ${record.score}</span>
-                </div>
-
-                <div class="small">
-                  ${record.category}: ${record.reason || 'No reason entered'}
-                </div>
-
-                ${record.imageData ? `<img class="thumb" src="${record.imageData}" />` : ''}
-              </div>
-            `;
-          }).join('')
-        : '<div class="item small">No red card records yet.</div>';
-    }
-
-    function getSelectedEmployeeId() {
-      return document.getElementById('evalEmployee').value;
-    }
-
-    function generateReport() {
-      const employeeId = getSelectedEmployeeId();
-      const month = document.getElementById('compareMonth').value;
-      const employee = employees.find(emp => emp.id === employeeId);
-
-      if (!employee) {
-        document.getElementById('report').textContent = 'Please add or select an employee first.';
-        return;
-      }
-
-      const prevMonth = previousMonth(month);
-      const currentRecords = monthRecords(month, employeeId);
-      const previousRecords = monthRecords(prevMonth, employeeId);
-      const currentAverage = avgScore(currentRecords);
-      const previousAverage = avgScore(previousRecords);
-
-      const currentCategoryScores = {};
-      const previousCategoryScores = {};
-
-      currentRecords.forEach(record => {
-        if (record.categoryScore !== null) {
-          currentCategoryScores[record.category] = record.categoryScore;
-        }
-      });
-
-      previousRecords.forEach(record => {
-        if (record.categoryScore !== null) {
-          previousCategoryScores[record.category] = record.categoryScore;
-        }
-      });
-
-      const improved = [];
-      const declined = [];
-
-      categories.forEach(category => {
-        if (
-          currentCategoryScores[category] !== undefined &&
-          previousCategoryScores[category] !== undefined
-        ) {
-          const diff = currentCategoryScores[category] - previousCategoryScores[category];
-
-          if (diff > 0) improved.push(`${category} +${diff}`);
-          if (diff < 0) declined.push(`${category} ${diff}`);
-        }
-      });
-
-      const repeated = [...new Set(currentRecords.map(record => record.category))]
-        .filter(category => previousRecords.some(record => record.category === category));
-
-      const currentReasons = currentRecords
-        .map(record => `- ${record.category}: ${record.reason || 'No reason entered'}`)
-        .join('\n');
-
-      const suggestions = currentRecords
-        .map(record => record.suggestion)
-        .filter(Boolean)
-        .map(suggestion => `- ${suggestion}`)
-        .join('\n');
-
-      let scoreLine = 'Not enough score data available.';
-
-      if (currentAverage !== null && previousAverage !== null) {
-        const diff = currentAverage - previousAverage;
-
-        if (diff > 0) {
-          scoreLine = `${prevMonth} average score ${previousAverage} → ${month} average score ${currentAverage}. Improved by +${diff}.`;
-        } else if (diff < 0) {
-          scoreLine = `${prevMonth} average score ${previousAverage} → ${month} average score ${currentAverage}. Declined by ${diff}.`;
-        } else {
-          scoreLine = `${prevMonth} average score ${previousAverage} → ${month} average score ${currentAverage}. No change.`;
-        }
-      } else if (currentAverage !== null) {
-        scoreLine = `${month} average score is ${currentAverage}. No record from the previous month.`;
-      }
-
-      document.getElementById('report').textContent =
-`${employee.name} Monthly Red Card Comparison Report
+  $("localReport").textContent =
+`${employee.name} Monthly Comparison
 
 ${scoreLine}
 
 Improved Areas:
-${improved.length ? improved.map(item => '🟢 ' + item).join('\n') : 'No measurable improvement areas.'}
+${improved.length ? improved.map(item => "🟢 " + item).join("\n") : "No measurable improvement."}
 
 Declined Areas:
-${declined.length ? declined.map(item => '🔴 ' + item).join('\n') : 'No measurable declined areas.'}
+${declined.length ? declined.map(item => "🔴 " + item).join("\n") : "No measurable decline."}
 
-Repeated Issues:
-${repeated.length ? repeated.map(item => '⚠️ ' + item).join('\n') : 'No repeated issues.'}
+Repeated Focus Areas:
+${repeated.length ? repeated.map(item => "⚠️ " + item).join("\n") : "No repeated category data."}
 
-Current Month Reason Records:
-${currentReasons || 'No records.'}
+Current Month Notes:
+${currentNotes}
 
 Next Month Suggestions:
-${suggestions || 'Based on the main issues this month, focus on proactive service, execution, table maintenance, and response speed.'}`;
-    }
+${suggestions}`;
+}
 
-    function buildComparisonContext(employeeId, month) {
-      const employee = employees.find(emp => emp.id === employeeId);
-      if (!employee) return null;
+async function aiCompare() {
+  localCompare();
 
-      const prevMonth = previousMonth(month);
-      const currentRecords = monthRecords(month, employeeId);
-      const previousRecords = monthRecords(prevMonth, employeeId);
+  const employee = getSelectedEmployee();
+  const key = $("openaiKey").value.trim();
+  const model = $("openaiModel").value.trim() || "gpt-4o-mini";
+  const tone = $("aiTone").value;
 
-      const summarize = records => {
-        return records.map(record => ({
-          month: record.month,
-          score: record.score,
-          category: record.category,
-          categoryScore: record.categoryScore,
-          reason: record.reason || '',
-          suggestion: record.suggestion || '',
-          createdAt: record.createdAt
-        }));
-      };
+  if (!employee) {
+    $("aiReport").textContent = "Please select an employee.";
+    return;
+  }
 
-      return {
-        employee: {
-          name: employee.name,
-          role: employee.role || ''
-        },
-        targetMonth: month,
-        previousMonth: prevMonth,
-        targetAverage: avgScore(currentRecords),
-        previousAverage: avgScore(previousRecords),
-        targetRecords: summarize(currentRecords),
-        previousRecords: summarize(previousRecords),
-        categories
-      };
-    }
+  if (!key) {
+    $("aiReport").textContent = "Please enter OpenAI API key in AI Settings.";
+    return;
+  }
 
-    function buildAIPrompt(context, tone) {
-      const toneGuide = {
-        leader: 'Use a direct, professional restaurant leader style. Be clear, practical, and action-focused.',
-        soft: 'Use a supportive training tone. Encourage improvement while still pointing out real problems.',
-        strict: 'Use a strict review tone. Emphasize standards, accountability, repeated problems, and required improvement.'
-      }[tone] || 'Use a direct, professional, and action-focused style.';
+  localStorage.setItem("rc_openai_key", key);
+  localStorage.setItem("rc_openai_model", model);
 
-      return `
+  const month = $("month").value;
+  const prev = previousMonth(month);
+
+  const context = {
+    employee: {
+      id: employee.id,
+      name: employee.name,
+      role: employee.role || ""
+    },
+    targetMonth: month,
+    previousMonth: prev,
+    targetRecords: monthRecords(month, employee.id),
+    previousRecords: monthRecords(prev, employee.id)
+  };
+
+  if (!context.targetRecords.length && !context.previousRecords.length) {
+    $("aiReport").textContent = "This employee has no records in the target month or previous month.";
+    return;
+  }
+
+  const toneGuide = {
+    leader: "direct, professional restaurant leader feedback",
+    soft: "supportive training tone that still identifies real problems",
+    strict: "strict performance review tone focused on standards and accountability"
+  }[tone] || "direct, professional restaurant leader feedback";
+
+  $("aiCompareBtn").disabled = true;
+  $("aiCompareBtn").textContent = "Analyzing...";
+  $("aiReport").textContent = "AI is comparing records...";
+
+  try {
+    const prompt = `
 You are a restaurant red card performance review assistant.
+Write in English.
+Use ${toneGuide}.
 
-Analyze the employee's target month red card records compared with the previous month.
+Compare the target month with the previous month using ONLY the data below.
+Focus on practical restaurant service actions: proactive table checks, soup refill, water refill, plate changes, dish confirmation, walkie response, table maintenance, guest complaint prevention, SOP execution, teamwork, focus, and discipline.
 
-Rules:
-1. Do not invent data.
-2. Only use the records provided.
-3. Write in English.
-4. Use this exact structure:
+Use this exact format:
 [Overall Review]
 [Score Change]
 [Clear Improvements]
@@ -939,114 +991,289 @@ Rules:
 [Reason Analysis]
 [Next Month Training Actions]
 [What to Say to the Employee]
-5. Training actions must be specific restaurant service behaviors, such as proactive table checks, soup refill, water refill, plate changes, walkie response, table maintenance, dish confirmation, and teamwork.
-6. Tone: ${toneGuide}
 
 Data:
 ${JSON.stringify(context, null, 2)}
-      `.trim();
+`.trim();
+
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model,
+        input: prompt,
+        temperature: 0.3
+      })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || "OpenAI request failed.");
+
+    const text = extractText(data);
+    $("aiReport").textContent = text || "AI returned no readable text.";
+
+    const latestRecord = records
+      .filter(record => record.employee_id === employee.id && record.month === month)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+    if (latestRecord && text) {
+      latestRecord.ai_review = text;
+      saveLocal();
     }
+  } catch (error) {
+    $("aiReport").textContent = "AI Compare failed: " + error.message;
+  } finally {
+    $("aiCompareBtn").disabled = false;
+    $("aiCompareBtn").textContent = "AI Compare";
+  }
+}
 
-    function extractOpenAIText(data) {
-      if (data.output_text) return data.output_text;
+function extractText(data) {
+  if (data.output_text) return data.output_text;
 
-      if (Array.isArray(data.output)) {
-        return data.output
-          .flatMap(item => item.content || [])
-          .map(content => content.text || content.output_text || '')
-          .filter(Boolean)
-          .join('\n');
-      }
+  if (Array.isArray(data.output)) {
+    return data.output
+      .flatMap(item => item.content || [])
+      .map(content => content.text || content.output_text || "")
+      .filter(Boolean)
+      .join("\n");
+  }
 
-      if (data.choices && data.choices[0] && data.choices[0].message) {
-        return data.choices[0].message.content;
-      }
+  if (data.choices?.[0]?.message?.content) {
+    return data.choices[0].message.content;
+  }
 
-      return '';
-    }
+  return "";
+}
 
-    async function generateAIReport() {
-      generateReport();
+function safeParseJson(text) {
+  if (!text) return null;
 
-      const employeeId = getSelectedEmployeeId();
-      const month = document.getElementById('compareMonth').value;
-      const key = document.getElementById('aiApiKey').value.trim();
-      const model = document.getElementById('aiModel').value.trim() || 'gpt-4o-mini';
-      const tone = document.getElementById('aiTone').value;
-      const aiBox = document.getElementById('aiReport');
-      const button = document.getElementById('aiCompareBtn');
+  let cleaned = text.trim();
+  cleaned = cleaned.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
 
-      if (!key) {
-        aiBox.textContent = 'Please enter your OpenAI API key first in AI Settings.';
-        return;
-      }
-
-      const context = buildComparisonContext(employeeId, month);
-
-      if (!context) {
-        aiBox.textContent = 'Please select a valid employee first.';
-        return;
-      }
-
-      if (!context.targetRecords.length && !context.previousRecords.length) {
-        aiBox.textContent = 'This employee has no records in the target month or previous month. AI comparison cannot be generated.';
-        return;
-      }
-
-      localStorage.setItem('rc_openai_key', key);
-      localStorage.setItem('rc_ai_model', model);
-
-      aiBox.textContent = 'AI is analyzing the target month and previous month records...';
-      button.classList.add('loading');
-      button.textContent = 'Analyzing...';
-
+  try {
+    return JSON.parse(cleaned);
+  } catch (_) {
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+    if (start !== -1 && end !== -1 && end > start) {
       try {
-        const prompt = buildAIPrompt(context, tone);
-
-        const response = await fetch('https://api.openai.com/v1/responses', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${key}`
-          },
-          body: JSON.stringify({
-            model,
-            input: prompt,
-            temperature: 0.35
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error?.message || 'OpenAI API request failed.');
-        }
-
-        const text = extractOpenAIText(data);
-        aiBox.textContent = text || 'AI returned a response, but no readable text was found.';
-      } catch (error) {
-        aiBox.textContent =
-`AI generation failed: ${error.message}
-
-Possible reasons:
-- The API key is incorrect.
-- The model name is unavailable.
-- The API key has no available credits.
-- The browser blocked the request.
-- For public deployment, direct frontend API calls may not be reliable.`;
-      } finally {
-        button.classList.remove('loading');
-        button.textContent = 'AI Compare';
+        return JSON.parse(cleaned.slice(start, end + 1));
+      } catch (_) {
+        return null;
       }
     }
+    return null;
+  }
+}
 
-    function renderAll() {
-      renderSelectors();
-      renderEmployees();
-      renderDashboard();
-    }
+function saveCloudSettings() {
+  localStorage.setItem("rc_supabase_url", $("supabaseUrl").value.trim());
+  localStorage.setItem("rc_supabase_key", $("supabaseKey").value.trim());
+  $("cloudStatus").textContent = "Cloud settings saved.";
+}
 
-    renderAll();
-  </script>
+function cloudHeaders() {
+  const key = $("supabaseKey").value.trim();
+  return {
+    "Content-Type": "application/json",
+    "apikey": key,
+    "Authorization": `Bearer ${key}`,
+    "Prefer": "resolution=merge-duplicates"
+  };
+}
+
+async function supabaseUpsert(table, rows) {
+  const url = $("supabaseUrl").value.trim();
+  const key = $("supabaseKey").value.trim();
+
+  if (!url || !key) throw new Error("Missing Supabase URL or anon key.");
+  if (!rows.length) return;
+
+  const response = await fetch(`${url}/rest/v1/${table}?on_conflict=id`, {
+    method: "POST",
+    headers: cloudHeaders(),
+    body: JSON.stringify(rows)
+  });
+
+  if (!response.ok) throw new Error(await response.text());
+}
+
+async function syncToCloud() {
+  saveCloudSettings();
+
+  try {
+    $("cloudStatus").textContent = "Syncing employees...";
+    await supabaseUpsert("employees", employees);
+
+    $("cloudStatus").textContent = "Syncing records...";
+    await supabaseUpsert("red_card_records", records);
+
+    $("cloudStatus").textContent = "Cloud sync completed.";
+  } catch (error) {
+    $("cloudStatus").textContent = "Cloud sync failed: " + error.message;
+  }
+}
+
+async function loadFromCloud() {
+  saveCloudSettings();
+
+  const url = $("supabaseUrl").value.trim();
+  const key = $("supabaseKey").value.trim();
+
+  if (!url || !key) {
+    $("cloudStatus").textContent = "Missing Supabase URL or anon key.";
+    return;
+  }
+
+  try {
+    $("cloudStatus").textContent = "Loading from cloud...";
+
+    const [employeeResponse, recordResponse] = await Promise.all([
+      fetch(`${url}/rest/v1/employees?select=*`, { headers: cloudHeaders() }),
+      fetch(`${url}/rest/v1/red_card_records?select=*`, { headers: cloudHeaders() })
+    ]);
+
+    if (!employeeResponse.ok) throw new Error(await employeeResponse.text());
+    if (!recordResponse.ok) throw new Error(await recordResponse.text());
+
+    const cloudEmployees = await employeeResponse.json();
+    const cloudRecords = await recordResponse.json();
+
+    employees = mergeById(employees, cloudEmployees);
+    records = mergeById(records, cloudRecords);
+
+    saveLocal();
+    $("cloudStatus").textContent = "Loaded from cloud and merged with local data.";
+  } catch (error) {
+    $("cloudStatus").textContent = "Load failed: " + error.message;
+  }
+}
+
+function mergeById(localRows, cloudRows) {
+  const map = new Map();
+  [...localRows, ...cloudRows].forEach(row => map.set(row.id, row));
+  return Array.from(map.values());
+}
+
+function renderAll() {
+  renderSelectors();
+  renderDashboard();
+  renderIssues();
+  renderEmployees();
+  renderRecent();
+}
+
+function renderSelectors() {
+  const currentValue = $("employeeSelect")?.value;
+  $("employeeSelect").innerHTML = employees.length
+    ? employees.map(employee => `<option value="${escapeHtml(employee.id)}">${escapeHtml(employee.name)}${employee.role ? " · " + escapeHtml(employee.role) : ""}</option>`).join("")
+    : `<option value="">No employee yet</option>`;
+
+  if (currentValue && employees.some(employee => employee.id === currentValue)) {
+    $("employeeSelect").value = currentValue;
+  }
+}
+
+function renderDashboard() {
+  const list = records.filter(record => record.month === thisMonth);
+  $("statPeople").textContent = new Set(list.map(record => record.employee_id)).size;
+  $("statCards").textContent = list.length;
+  $("statAvg").textContent = averageTotalScore(list) ?? "-";
+}
+
+function renderIssues() {
+  const monthList = records.filter(record => record.month === thisMonth);
+  const counts = {};
+
+  monthList.forEach(record => {
+    Object.entries(record.category_scores || {}).forEach(([category, score]) => {
+      if (score !== null && score !== undefined && Number(score) < 10) {
+        counts[category] = (counts[category] || 0) + 1;
+      }
+    });
+  });
+
+  const issues = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+  $("issueList").innerHTML = issues.length
+    ? issues.map(([category, count]) => `
+      <div class="item">
+        <div class="item-title">
+          <span>${escapeHtml(category)}</span>
+          <span class="pill bad">${count} time${count > 1 ? "s" : ""}</span>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="item small">No main issue data for this month.</div>`;
+}
+
+function renderEmployees() {
+  $("employeeList").innerHTML = employees.length
+    ? employees.map(employee => {
+      const employeeRecords = records.filter(record => record.employee_id === employee.id);
+      const currentAverage = averageTotalScore(monthRecords(thisMonth, employee.id));
+      const previousAverage = averageTotalScore(monthRecords(previousMonth(thisMonth), employee.id));
+      let trend = `<span class="pill">No Data</span>`;
+
+      if (currentAverage !== null && previousAverage !== null) {
+        const diff = currentAverage - previousAverage;
+        if (diff > 0) trend = `<span class="pill good">Improved +${diff}</span>`;
+        else if (diff < 0) trend = `<span class="pill bad">Declined ${diff}</span>`;
+        else trend = `<span class="pill warn">No Change</span>`;
+      }
+
+      return `
+        <div class="item">
+          <div class="item-title">
+            <span>${escapeHtml(employee.name)}</span>
+            ${trend}
+          </div>
+          <div class="small">${escapeHtml(employee.role || "No position entered")} · ${employeeRecords.length} records</div>
+          <div class="actions">
+            <button class="danger" onclick="deleteEmployee('${escapeJs(employee.id)}')">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join("")
+    : `<div class="item small">No employees yet.</div>`;
+}
+
+function renderRecent() {
+  const recent = [...records]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 8);
+
+  $("recentList").innerHTML = recent.length
+    ? recent.map(record => `
+      <div class="item">
+        <div class="item-title">
+          <span>${escapeHtml(record.employee_name || "Unknown Employee")}</span>
+          <span class="pill">${escapeHtml(record.month || "-")} · ${record.total_score ?? "-"}</span>
+        </div>
+        <div class="small">${escapeHtml(record.reason || "No reason entered")}</div>
+        ${record.image_data ? `<img class="thumb" src="${record.image_data}" alt="Red card photo" />` : ""}
+      </div>
+    `).join("")
+    : `<div class="item small">No records yet.</div>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeJs(value) {
+  return String(value ?? "").replaceAll("\\", "\\\\").replaceAll("'", "\\'");
+}
+</script>
 </body>
 </html>
