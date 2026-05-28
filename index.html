@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,6 +19,7 @@
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -37,10 +38,23 @@
       z-index: 10;
     }
 
-    h1 { margin: 0; font-size: 24px; letter-spacing: -0.5px; }
-    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+    }
 
-    main { padding: 16px; max-width: 980px; margin: 0 auto; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    main {
+      padding: 16px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
 
     .tabs {
       display: grid;
@@ -58,12 +72,33 @@
       font-size: 14px;
       cursor: pointer;
     }
-    .tab.active { background: #b91c1c; border-color: #ef4444; }
-    button.primary { background: #dc2626; border-color: #ef4444; font-weight: 700; }
-    button.secondary { background: var(--card2); }
-    button.danger { background: rgba(255,77,79,0.18); color: #ffb3b3; }
 
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .tab.active {
+      background: #b91c1c;
+      border-color: #ef4444;
+    }
+
+    button.primary {
+      background: #dc2626;
+      border-color: #ef4444;
+      font-weight: 700;
+    }
+
+    button.secondary {
+      background: var(--card2);
+    }
+
+    button.danger {
+      background: rgba(255,77,79,0.18);
+      color: #ffb3b3;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -71,11 +106,30 @@
       padding: 14px;
       box-shadow: 0 12px 30px rgba(0,0,0,0.2);
     }
-    .stat-num { font-size: 28px; font-weight: 800; margin-top: 8px; }
-    .label { color: var(--muted); font-size: 13px; }
 
-    .section { display: none; }
-    .section.active { display: block; }
+    .ai-box {
+      border-color: rgba(91,140,255,0.45);
+      background: rgba(91,140,255,0.08);
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
 
     input, select, textarea {
       width: 100%;
@@ -87,132 +141,366 @@
       margin-top: 6px;
       font-size: 15px;
     }
-    textarea { min-height: 92px; resize: vertical; }
-    label { display: block; margin: 12px 0; font-size: 14px; color: var(--muted); }
-    select option { color: #111; }
 
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .list { display: grid; gap: 10px; margin-top: 12px; }
-    .item { background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
-    .item-title { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-weight: 700; }
-    .pill { padding: 4px 8px; border-radius: 99px; font-size: 12px; background: rgba(255,255,255,0.12); color: var(--muted); white-space: nowrap; }
-    .pill.good { color: #b8ffd7; background: rgba(55,201,120,0.16); }
-    .pill.bad { color: #ffc4c4; background: rgba(255,77,79,0.16); }
-    .pill.warn { color: #ffe6a3; background: rgba(245,197,66,0.16); }
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
 
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    .small { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
-    .category-score { display: grid; grid-template-columns: 1fr 90px; gap: 8px; align-items: end; }
-    img.thumb { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid var(--border); }
+    label {
+      display: block;
+      margin: 12px 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
 
-    .report-block { white-space: pre-wrap; line-height: 1.55; color: #e9edf5; }
+    select option {
+      color: #111;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .item {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .item-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .pill {
+      padding: 4px 8px;
+      border-radius: 99px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.12);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      color: #b8ffd7;
+      background: rgba(55,201,120,0.16);
+    }
+
+    .pill.bad {
+      color: #ffc4c4;
+      background: rgba(255,77,79,0.16);
+    }
+
+    .pill.warn {
+      color: #ffe6a3;
+      background: rgba(245,197,66,0.16);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
+    .notice {
+      color: #c9d6ff;
+      background: rgba(91,140,255,0.10);
+      border: 1px solid rgba(91,140,255,0.25);
+      border-radius: 14px;
+      padding: 10px;
+      line-height: 1.45;
+    }
+
+    .muted-input {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+    }
+
+    .loading {
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    img.thumb {
+      max-width: 100%;
+      border-radius: 12px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .report-block {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      color: #e9edf5;
+    }
 
     @media (max-width: 720px) {
-      .grid, .row { grid-template-columns: 1fr; }
-      .tabs { grid-template-columns: repeat(2, 1fr); }
-      h1 { font-size: 22px; }
+      .grid, .row {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      h1 {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Red Card Tracker</h1>
-    <div class="sub">海底捞员工红卡考核追踪 · 月度对比 · 提升/倒退分析</div>
+    <div class="sub">Employee red card performance tracking · Monthly comparison · Improvement and decline analysis</div>
   </header>
 
   <main>
     <div class="tabs">
-      <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
-      <button class="tab" onclick="showTab('employees')">Employees</button>
-      <button class="tab" onclick="showTab('add')">Add Red Card</button>
-      <button class="tab" onclick="showTab('compare')">Compare</button>
+      <button class="tab active" onclick="showTab(event, 'dashboard')">Dashboard</button>
+      <button class="tab" onclick="showTab(event, 'employees')">Employees</button>
+      <button class="tab" onclick="showTab(event, 'add')">Add Red Card</button>
+      <button class="tab" onclick="showTab(event, 'compare')">Compare</button>
     </div>
 
     <section id="dashboard" class="section active">
       <div class="grid">
-        <div class="card"><div class="label">本月考核人数</div><div id="statPeople" class="stat-num">0</div></div>
-        <div class="card"><div class="label">本月平均分</div><div id="statAvg" class="stat-num">-</div></div>
-        <div class="card"><div class="label">本月红卡记录</div><div id="statCards" class="stat-num">0</div></div>
+        <div class="card">
+          <div class="label">Employees Reviewed This Month</div>
+          <div id="statPeople" class="stat-num">0</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Average Score This Month</div>
+          <div id="statAvg" class="stat-num">-</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Red Card Records This Month</div>
+          <div id="statCards" class="stat-num">0</div>
+        </div>
       </div>
+
       <div class="card" style="margin-top:12px;">
-        <div class="item-title">本月重点问题 <span class="pill">自动统计</span></div>
+        <div class="item-title">
+          Main Issues This Month
+          <span class="pill">Auto Summary</span>
+        </div>
         <div id="issueList" class="list"></div>
       </div>
+
       <div class="card" style="margin-top:12px;">
-        <div class="item-title">最近记录 <span class="pill">Latest</span></div>
+        <div class="item-title">
+          Recent Records
+          <span class="pill">Latest</span>
+        </div>
         <div id="recentList" class="list"></div>
       </div>
     </section>
 
     <section id="employees" class="section">
       <div class="card">
-        <div class="item-title">添加员工</div>
+        <div class="item-title">Add Employee</div>
+
         <div class="row">
-          <label>姓名<input id="empName" placeholder="例如 Tom / 小王" /></label>
-          <label>岗位/区域<input id="empRole" placeholder="Server / Bar / Runner" /></label>
+          <label>
+            Name
+            <input id="empName" placeholder="Example: Tom / Amy" />
+          </label>
+
+          <label>
+            Position / Area
+            <input id="empRole" placeholder="Server / Bar / Runner" />
+          </label>
         </div>
-        <button class="primary" onclick="addEmployee()">添加员工</button>
+
+        <button class="primary" onclick="addEmployee()">Add Employee</button>
       </div>
+
       <div id="employeeList" class="list"></div>
     </section>
 
     <section id="add" class="section">
       <div class="card">
-        <div class="item-title">添加红卡考核</div>
+        <div class="item-title">Add Red Card Review</div>
+
         <div class="row">
-          <label>员工<select id="evalEmployee"></select></label>
-          <label>月份<input id="evalMonth" type="month" /></label>
+          <label>
+            Employee
+            <select id="evalEmployee"></select>
+          </label>
+
+          <label>
+            Month
+            <input id="evalMonth" type="month" />
+          </label>
         </div>
+
         <div class="row">
-          <label>总分<input id="evalScore" type="number" min="0" max="100" placeholder="0-100" /></label>
-          <label>红卡类别
+          <label>
+            Overall Score
+            <input id="evalScore" type="number" min="0" max="100" placeholder="0-100" />
+          </label>
+
+          <label>
+            Red Card Category
             <select id="evalCategory">
-              <option>仪容仪表</option>
-              <option>服务态度</option>
-              <option>桌面维护</option>
-              <option>补汤/补水/换盘</option>
-              <option>上菜确认</option>
-              <option>Walkie回应</option>
-              <option>空闲时间状态</option>
-              <option>团队配合</option>
-              <option>客诉问题</option>
-              <option>SOP执行</option>
+              <option>Appearance</option>
+              <option>Service Attitude</option>
+              <option>Table Maintenance</option>
+              <option>Soup / Water / Plate Refill</option>
+              <option>Dish Confirmation</option>
+              <option>Walkie Response</option>
+              <option>Idle Time Behavior</option>
+              <option>Teamwork</option>
+              <option>Guest Complaint</option>
+              <option>SOP Execution</option>
             </select>
           </label>
         </div>
-        <label>单项分数变化参考<input id="evalCategoryScore" type="number" min="0" max="100" placeholder="该项目本次表现分，可选" /></label>
-        <label>原因<textarea id="evalReason" placeholder="例如：客人需要加汤时没有主动观察，leader提醒后才处理。"></textarea></label>
-        <label>改进建议<textarea id="evalSuggestion" placeholder="例如：下月重点观察桌面维护和主动补汤。"></textarea></label>
-        <label>上传/拍摄红卡照片<input id="evalImage" type="file" accept="image/*" /></label>
-        <button class="primary" onclick="addEvaluation()">保存记录</button>
+
+        <label>
+          Category Score Reference
+          <input id="evalCategoryScore" type="number" min="0" max="100" placeholder="Optional category score" />
+        </label>
+
+        <label>
+          Reason
+          <textarea id="evalReason" placeholder="Example: The guest needed soup refill, but the server did not notice until the leader reminded them."></textarea>
+        </label>
+
+        <label>
+          Improvement Suggestion
+          <textarea id="evalSuggestion" placeholder="Example: Focus on table maintenance and proactive soup refill next month."></textarea>
+        </label>
+
+        <label>
+          Upload / Take Red Card Photo
+          <input id="evalImage" type="file" accept="image/*" />
+        </label>
+
+        <button class="primary" onclick="addEvaluation()">Save Record</button>
       </div>
     </section>
 
     <section id="compare" class="section">
       <div class="card">
-        <div class="item-title">月度对比</div>
+        <div class="item-title">Monthly Comparison</div>
+
         <div class="row">
-          <label>员工<select id="compareEmployee"></select></label>
-          <label>目标月份<input id="compareMonth" type="month" /></label>
+          <label>
+            Employee
+            <select id="compareEmployee"></select>
+          </label>
+
+          <label>
+            Target Month
+            <input id="compareMonth" type="month" />
+          </label>
         </div>
-        <button class="primary" onclick="generateReport()">生成对比报告</button>
+
+        <div class="actions">
+          <button class="primary" onclick="generateReport()">Generate Local Report</button>
+          <button class="secondary" id="aiCompareBtn" onclick="generateAIReport()">AI Direct Comparison</button>
+        </div>
+
+        <div class="notice small" style="margin-top:12px;">
+          AI comparison will send this employee's target month and previous month red card records to the OpenAI API.
+          Your API key is saved only in this browser's localStorage. For public team use, a backend proxy is strongly recommended.
+        </div>
+
+        <label>
+          OpenAI API Key
+          <input id="aiApiKey" class="muted-input" type="password" placeholder="sk-..." />
+        </label>
+
+        <div class="row">
+          <label>
+            AI Model
+            <input id="aiModel" class="muted-input" value="gpt-4o-mini" />
+          </label>
+
+          <label>
+            AI Tone
+            <select id="aiTone">
+              <option value="leader">Direct Leader Feedback</option>
+              <option value="soft">Supportive Training Tone</option>
+              <option value="strict">Strict Review Tone</option>
+            </select>
+          </label>
+        </div>
       </div>
+
       <div class="card" style="margin-top:12px;">
-        <div class="item-title">分析结果 <span class="pill">Report</span></div>
-        <div id="report" class="report-block small">选择员工和月份后生成。</div>
+        <div class="item-title">
+          Local Analysis Result
+          <span class="pill">Report</span>
+        </div>
+        <div id="report" class="report-block small">Select an employee and target month to generate a report.</div>
+      </div>
+
+      <div class="card ai-box" style="margin-top:12px;">
+        <div class="item-title">
+          AI Direct Comparison Result
+          <span class="pill">AI</span>
+        </div>
+        <div id="aiReport" class="report-block small">Click “AI Direct Comparison” to generate an AI-based report.</div>
       </div>
     </section>
   </main>
 
   <script>
-    const categories = ["仪容仪表", "服务态度", "桌面维护", "补汤/补水/换盘", "上菜确认", "Walkie回应", "空闲时间状态", "团队配合", "客诉问题", "SOP执行"];
+    const categories = [
+      "Appearance",
+      "Service Attitude",
+      "Table Maintenance",
+      "Soup / Water / Plate Refill",
+      "Dish Confirmation",
+      "Walkie Response",
+      "Idle Time Behavior",
+      "Teamwork",
+      "Guest Complaint",
+      "SOP Execution"
+    ];
+
     let employees = JSON.parse(localStorage.getItem('rc_employees') || '[]');
     let evaluations = JSON.parse(localStorage.getItem('rc_evaluations') || '[]');
 
     const now = new Date();
-    const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
     document.getElementById('evalMonth').value = thisMonth;
     document.getElementById('compareMonth').value = thisMonth;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedKey = localStorage.getItem('rc_openai_key') || '';
+      const savedModel = localStorage.getItem('rc_ai_model') || 'gpt-4o-mini';
+
+      document.getElementById('aiApiKey').value = savedKey;
+      document.getElementById('aiModel').value = savedModel;
+    });
 
     function save() {
       localStorage.setItem('rc_employees', JSON.stringify(employees));
@@ -220,9 +508,15 @@
       renderAll();
     }
 
-    function showTab(id) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    function showTab(event, id) {
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
       document.getElementById(id).classList.add('active');
       event.target.classList.add('active');
     }
@@ -230,154 +524,490 @@
     function addEmployee() {
       const name = document.getElementById('empName').value.trim();
       const role = document.getElementById('empRole').value.trim();
-      if (!name) return alert('请输入员工姓名');
-      employees.push({ id: Date.now().toString(), name, role, createdAt: new Date().toISOString() });
+
+      if (!name) {
+        alert('Please enter the employee name.');
+        return;
+      }
+
+      employees.push({
+        id: Date.now().toString(),
+        name,
+        role,
+        createdAt: new Date().toISOString()
+      });
+
       document.getElementById('empName').value = '';
       document.getElementById('empRole').value = '';
+
       save();
     }
 
     function deleteEmployee(id) {
-      if (!confirm('删除员工会同时删除该员工记录，确定吗？')) return;
-      employees = employees.filter(e => e.id !== id);
-      evaluations = evaluations.filter(e => e.employeeId !== id);
+      if (!confirm('Deleting this employee will also delete all related records. Continue?')) return;
+
+      employees = employees.filter(employee => employee.id !== id);
+      evaluations = evaluations.filter(record => record.employeeId !== id);
+
       save();
     }
 
     function addEvaluation() {
       const employeeId = document.getElementById('evalEmployee').value;
-      if (!employeeId) return alert('请先添加员工');
       const month = document.getElementById('evalMonth').value;
-      const score = Number(document.getElementById('evalScore').value);
+      const scoreValue = document.getElementById('evalScore').value;
+      const score = Number(scoreValue);
       const category = document.getElementById('evalCategory').value;
-      const categoryScore = document.getElementById('evalCategoryScore').value ? Number(document.getElementById('evalCategoryScore').value) : null;
+      const categoryScoreValue = document.getElementById('evalCategoryScore').value;
+      const categoryScore = categoryScoreValue ? Number(categoryScoreValue) : null;
       const reason = document.getElementById('evalReason').value.trim();
       const suggestion = document.getElementById('evalSuggestion').value.trim();
       const file = document.getElementById('evalImage').files[0];
-      if (!month || Number.isNaN(score)) return alert('请填写月份和分数');
+
+      if (!employeeId) {
+        alert('Please add an employee first.');
+        return;
+      }
+
+      if (!month || scoreValue === '' || Number.isNaN(score)) {
+        alert('Please enter the month and overall score.');
+        return;
+      }
+
+      if (score < 0 || score > 100) {
+        alert('The overall score must be between 0 and 100.');
+        return;
+      }
+
+      if (categoryScore !== null && (categoryScore < 0 || categoryScore > 100)) {
+        alert('The category score must be between 0 and 100.');
+        return;
+      }
 
       const finish = (imageData) => {
-        evaluations.push({ id: Date.now().toString(), employeeId, month, score, category, categoryScore, reason, suggestion, imageData, createdAt: new Date().toISOString() });
+        evaluations.push({
+          id: Date.now().toString(),
+          employeeId,
+          month,
+          score,
+          category,
+          categoryScore,
+          reason,
+          suggestion,
+          imageData,
+          createdAt: new Date().toISOString()
+        });
+
         document.getElementById('evalScore').value = '';
         document.getElementById('evalCategoryScore').value = '';
         document.getElementById('evalReason').value = '';
         document.getElementById('evalSuggestion').value = '';
         document.getElementById('evalImage').value = '';
+
         save();
-        alert('已保存红卡记录');
+        alert('Red card record saved.');
       };
 
       if (file) {
         const reader = new FileReader();
-        reader.onload = e => finish(e.target.result);
+        reader.onload = event => finish(event.target.result);
         reader.readAsDataURL(file);
-      } else finish(null);
+      } else {
+        finish(null);
+      }
     }
 
     function monthRecords(month, employeeId = null) {
-      return evaluations.filter(e => e.month === month && (!employeeId || e.employeeId === employeeId));
+      return evaluations.filter(record => {
+        return record.month === month && (!employeeId || record.employeeId === employeeId);
+      });
     }
 
     function avgScore(records) {
       if (!records.length) return null;
-      return Math.round(records.reduce((s, r) => s + Number(r.score || 0), 0) / records.length);
+
+      return Math.round(
+        records.reduce((sum, record) => sum + Number(record.score || 0), 0) / records.length
+      );
     }
 
     function previousMonth(month) {
-      const [y, m] = month.split('-').map(Number);
-      const d = new Date(y, m - 2, 1);
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const [year, monthNumber] = month.split('-').map(Number);
+      const date = new Date(year, monthNumber - 2, 1);
+
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     }
 
     function renderSelectors() {
-      const opts = employees.map(e => `<option value="${e.id}">${e.name}${e.role ? ' · ' + e.role : ''}</option>`).join('');
-      document.getElementById('evalEmployee').innerHTML = opts;
-      document.getElementById('compareEmployee').innerHTML = opts;
+      const options = employees.map(employee => {
+        return `<option value="${employee.id}">${employee.name}${employee.role ? ' · ' + employee.role : ''}</option>`;
+      }).join('');
+
+      document.getElementById('evalEmployee').innerHTML = options;
+      document.getElementById('compareEmployee').innerHTML = options;
     }
 
     function renderEmployees() {
       const box = document.getElementById('employeeList');
+
       if (!employees.length) {
-        box.innerHTML = '<div class="item small">还没有员工。先添加员工，再录入红卡。</div>';
+        box.innerHTML = '<div class="item small">No employees yet. Add an employee first, then add red card records.</div>';
         return;
       }
-      box.innerHTML = employees.map(emp => {
-        const recs = evaluations.filter(e => e.employeeId === emp.id).sort((a,b)=>b.month.localeCompare(a.month));
-        const current = avgScore(monthRecords(thisMonth, emp.id));
-        const prev = avgScore(monthRecords(previousMonth(thisMonth), emp.id));
-        let trend = '<span class="pill">无数据</span>';
-        if (current !== null && prev !== null) {
-          const diff = current - prev;
-          trend = diff > 0 ? `<span class="pill good">提升 +${diff}</span>` : diff < 0 ? `<span class="pill bad">下降 ${diff}</span>` : '<span class="pill warn">持平</span>';
+
+      box.innerHTML = employees.map(employee => {
+        const records = evaluations
+          .filter(record => record.employeeId === employee.id)
+          .sort((a, b) => b.month.localeCompare(a.month));
+
+        const currentAverage = avgScore(monthRecords(thisMonth, employee.id));
+        const previousAverage = avgScore(monthRecords(previousMonth(thisMonth), employee.id));
+
+        let trend = '<span class="pill">No Data</span>';
+
+        if (currentAverage !== null && previousAverage !== null) {
+          const diff = currentAverage - previousAverage;
+
+          if (diff > 0) {
+            trend = `<span class="pill good">Improved +${diff}</span>`;
+          } else if (diff < 0) {
+            trend = `<span class="pill bad">Declined ${diff}</span>`;
+          } else {
+            trend = '<span class="pill warn">No Change</span>';
+          }
         }
-        return `<div class="item">
-          <div class="item-title"><span>${emp.name}</span>${trend}</div>
-          <div class="small">${emp.role || '未填写岗位'} · 记录数：${recs.length}</div>
-          <div class="actions"><button class="danger" onclick="deleteEmployee('${emp.id}')">删除</button></div>
-        </div>`;
+
+        return `
+          <div class="item">
+            <div class="item-title">
+              <span>${employee.name}</span>
+              ${trend}
+            </div>
+
+            <div class="small">
+              ${employee.role || 'No position entered'} · Records: ${records.length}
+            </div>
+
+            <div class="actions">
+              <button class="danger" onclick="deleteEmployee('${employee.id}')">Delete</button>
+            </div>
+          </div>
+        `;
       }).join('');
     }
 
     function renderDashboard() {
-      const recs = monthRecords(thisMonth);
-      const people = new Set(recs.map(r => r.employeeId)).size;
-      document.getElementById('statPeople').textContent = people;
-      document.getElementById('statAvg').textContent = avgScore(recs) ?? '-';
-      document.getElementById('statCards').textContent = recs.length;
+      const records = monthRecords(thisMonth);
+      const peopleCount = new Set(records.map(record => record.employeeId)).size;
+
+      document.getElementById('statPeople').textContent = peopleCount;
+      document.getElementById('statAvg').textContent = avgScore(records) ?? '-';
+      document.getElementById('statCards').textContent = records.length;
 
       const counts = {};
-      recs.forEach(r => counts[r.category] = (counts[r.category] || 0) + 1);
-      const issues = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      document.getElementById('issueList').innerHTML = issues.length ? issues.map(([k,v]) => `<div class="item"><div class="item-title">${k}<span class="pill bad">${v}次</span></div></div>`).join('') : '<div class="item small">本月暂无问题记录。</div>';
 
-      const recent = [...evaluations].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
-      document.getElementById('recentList').innerHTML = recent.length ? recent.map(r => {
-        const emp = employees.find(e => e.id === r.employeeId);
-        return `<div class="item">
-          <div class="item-title">${emp ? emp.name : '已删除员工'} <span class="pill">${r.month} · ${r.score}</span></div>
-          <div class="small">${r.category}：${r.reason || '无原因备注'}</div>
-          ${r.imageData ? `<img class="thumb" src="${r.imageData}" />` : ''}
-        </div>`;
-      }).join('') : '<div class="item small">暂无红卡记录。</div>';
+      records.forEach(record => {
+        counts[record.category] = (counts[record.category] || 0) + 1;
+      });
+
+      const issues = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      document.getElementById('issueList').innerHTML = issues.length
+        ? issues.map(([category, count]) => {
+            return `
+              <div class="item">
+                <div class="item-title">
+                  ${category}
+                  <span class="pill bad">${count} time${count > 1 ? 's' : ''}</span>
+                </div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="item small">No issue records for this month.</div>';
+
+      const recent = [...evaluations]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 6);
+
+      document.getElementById('recentList').innerHTML = recent.length
+        ? recent.map(record => {
+            const employee = employees.find(emp => emp.id === record.employeeId);
+
+            return `
+              <div class="item">
+                <div class="item-title">
+                  ${employee ? employee.name : 'Deleted Employee'}
+                  <span class="pill">${record.month} · ${record.score}</span>
+                </div>
+
+                <div class="small">
+                  ${record.category}: ${record.reason || 'No reason entered'}
+                </div>
+
+                ${record.imageData ? `<img class="thumb" src="${record.imageData}" />` : ''}
+              </div>
+            `;
+          }).join('')
+        : '<div class="item small">No red card records yet.</div>';
     }
 
     function generateReport() {
-      const empId = document.getElementById('compareEmployee').value;
+      const employeeId = document.getElementById('compareEmployee').value;
       const month = document.getElementById('compareMonth').value;
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) return;
-      const prev = previousMonth(month);
-      const curRecs = monthRecords(month, empId);
-      const prevRecs = monthRecords(prev, empId);
-      const curAvg = avgScore(curRecs);
-      const prevAvg = avgScore(prevRecs);
+      const employee = employees.find(emp => emp.id === employeeId);
 
-      const curCat = {};
-      const prevCat = {};
-      curRecs.forEach(r => { if (r.categoryScore !== null) curCat[r.category] = r.categoryScore; });
-      prevRecs.forEach(r => { if (r.categoryScore !== null) prevCat[r.category] = r.categoryScore; });
+      if (!employee) {
+        document.getElementById('report').textContent = 'Please add or select an employee first.';
+        return;
+      }
 
-      const improved = [];
-      const declined = [];
-      categories.forEach(c => {
-        if (curCat[c] !== undefined && prevCat[c] !== undefined) {
-          const diff = curCat[c] - prevCat[c];
-          if (diff > 0) improved.push(`${c} +${diff}`);
-          if (diff < 0) declined.push(`${c} ${diff}`);
+      const prevMonth = previousMonth(month);
+      const currentRecords = monthRecords(month, employeeId);
+      const previousRecords = monthRecords(prevMonth, employeeId);
+      const currentAverage = avgScore(currentRecords);
+      const previousAverage = avgScore(previousRecords);
+
+      const currentCategoryScores = {};
+      const previousCategoryScores = {};
+
+      currentRecords.forEach(record => {
+        if (record.categoryScore !== null) {
+          currentCategoryScores[record.category] = record.categoryScore;
         }
       });
 
-      const repeated = [...new Set(curRecs.map(r=>r.category))].filter(c => prevRecs.some(r => r.category === c));
-      const curReasons = curRecs.map(r => `- ${r.category}: ${r.reason || '无原因备注'}`).join('\n');
-      const suggestions = curRecs.map(r => r.suggestion).filter(Boolean).map(s => `- ${s}`).join('\n');
+      previousRecords.forEach(record => {
+        if (record.categoryScore !== null) {
+          previousCategoryScores[record.category] = record.categoryScore;
+        }
+      });
 
-      let scoreLine = '暂无足够分数数据。';
-      if (curAvg !== null && prevAvg !== null) {
-        const diff = curAvg - prevAvg;
-        scoreLine = `${prev} 平均分 ${prevAvg} → ${month} 平均分 ${curAvg}，${diff > 0 ? '提升 +' + diff : diff < 0 ? '下降 ' + diff : '持平'}。`;
-      } else if (curAvg !== null) scoreLine = `${month} 平均分 ${curAvg}，上月暂无记录。`;
+      const improved = [];
+      const declined = [];
 
-      document.getElementById('report').textContent = `${emp.name} 月度红卡对比报告\n\n${scoreLine}\n\n提升项：\n${improved.length ? improved.map(x=>'🟢 '+x).join('\n') : '暂无可量化提升项'}\n\n倒退项：\n${declined.length ? declined.map(x=>'🔴 '+x).join('\n') : '暂无可量化倒退项'}\n\n连续问题：\n${repeated.length ? repeated.map(x=>'⚠️ '+x).join('\n') : '暂无连续重复问题'}\n\n本月原因记录：\n${curReasons || '暂无'}\n\n下月建议：\n${suggestions || '根据本月主要问题，重点观察主动服务、执行力和回应速度。'}`;
+      categories.forEach(category => {
+        if (
+          currentCategoryScores[category] !== undefined &&
+          previousCategoryScores[category] !== undefined
+        ) {
+          const diff = currentCategoryScores[category] - previousCategoryScores[category];
+
+          if (diff > 0) improved.push(`${category} +${diff}`);
+          if (diff < 0) declined.push(`${category} ${diff}`);
+        }
+      });
+
+      const repeated = [...new Set(currentRecords.map(record => record.category))]
+        .filter(category => previousRecords.some(record => record.category === category));
+
+      const currentReasons = currentRecords
+        .map(record => `- ${record.category}: ${record.reason || 'No reason entered'}`)
+        .join('\n');
+
+      const suggestions = currentRecords
+        .map(record => record.suggestion)
+        .filter(Boolean)
+        .map(suggestion => `- ${suggestion}`)
+        .join('\n');
+
+      let scoreLine = 'Not enough score data available.';
+
+      if (currentAverage !== null && previousAverage !== null) {
+        const diff = currentAverage - previousAverage;
+
+        if (diff > 0) {
+          scoreLine = `${prevMonth} average score ${previousAverage} → ${month} average score ${currentAverage}. Improved by +${diff}.`;
+        } else if (diff < 0) {
+          scoreLine = `${prevMonth} average score ${previousAverage} → ${month} average score ${currentAverage}. Declined by ${diff}.`;
+        } else {
+          scoreLine = `${prevMonth} average score ${previousAverage} → ${month} average score ${currentAverage}. No change.`;
+        }
+      } else if (currentAverage !== null) {
+        scoreLine = `${month} average score is ${currentAverage}. No record from the previous month.`;
+      }
+
+      document.getElementById('report').textContent =
+`${employee.name} Monthly Red Card Comparison Report
+
+${scoreLine}
+
+Improved Areas:
+${improved.length ? improved.map(item => '🟢 ' + item).join('\n') : 'No measurable improvement areas.'}
+
+Declined Areas:
+${declined.length ? declined.map(item => '🔴 ' + item).join('\n') : 'No measurable declined areas.'}
+
+Repeated Issues:
+${repeated.length ? repeated.map(item => '⚠️ ' + item).join('\n') : 'No repeated issues.'}
+
+Current Month Reason Records:
+${currentReasons || 'No records.'}
+
+Next Month Suggestions:
+${suggestions || 'Based on the main issues this month, focus on proactive service, execution, table maintenance, and response speed.'}`;
+    }
+
+    function buildComparisonContext(employeeId, month) {
+      const employee = employees.find(emp => emp.id === employeeId);
+      if (!employee) return null;
+
+      const prevMonth = previousMonth(month);
+      const currentRecords = monthRecords(month, employeeId);
+      const previousRecords = monthRecords(prevMonth, employeeId);
+
+      const summarize = records => {
+        return records.map(record => ({
+          month: record.month,
+          score: record.score,
+          category: record.category,
+          categoryScore: record.categoryScore,
+          reason: record.reason || '',
+          suggestion: record.suggestion || '',
+          createdAt: record.createdAt
+        }));
+      };
+
+      return {
+        employee: {
+          name: employee.name,
+          role: employee.role || ''
+        },
+        targetMonth: month,
+        previousMonth: prevMonth,
+        targetAverage: avgScore(currentRecords),
+        previousAverage: avgScore(previousRecords),
+        targetRecords: summarize(currentRecords),
+        previousRecords: summarize(previousRecords),
+        categories
+      };
+    }
+
+    function buildAIPrompt(context, tone) {
+      const toneGuide = {
+        leader: 'Use a direct, professional restaurant leader style. Be clear, practical, and action-focused.',
+        soft: 'Use a supportive training tone. Encourage improvement while still pointing out real problems.',
+        strict: 'Use a strict review tone. Emphasize standards, accountability, repeated problems, and required improvement.'
+      }[tone] || 'Use a direct, professional, and action-focused style.';
+
+      return `
+You are a restaurant red card performance review assistant.
+
+Analyze the employee's target month red card records compared with the previous month.
+
+Rules:
+1. Do not invent data.
+2. Only use the records provided.
+3. Write in English.
+4. Use this exact structure:
+[Overall Review]
+[Score Change]
+[Clear Improvements]
+[Clear Declines]
+[Repeated Issues]
+[Reason Analysis]
+[Next Month Training Actions]
+[What to Say to the Employee]
+5. Training actions must be specific restaurant service behaviors, such as proactive table checks, soup refill, water refill, plate changes, walkie response, table maintenance, dish confirmation, and teamwork.
+6. Tone: ${toneGuide}
+
+Data:
+${JSON.stringify(context, null, 2)}
+      `.trim();
+    }
+
+    function extractOpenAIText(data) {
+      if (data.output_text) return data.output_text;
+
+      if (Array.isArray(data.output)) {
+        return data.output
+          .flatMap(item => item.content || [])
+          .map(content => content.text || content.output_text || '')
+          .filter(Boolean)
+          .join('\n');
+      }
+
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        return data.choices[0].message.content;
+      }
+
+      return '';
+    }
+
+    async function generateAIReport() {
+      generateReport();
+
+      const employeeId = document.getElementById('compareEmployee').value;
+      const month = document.getElementById('compareMonth').value;
+      const key = document.getElementById('aiApiKey').value.trim();
+      const model = document.getElementById('aiModel').value.trim() || 'gpt-4o-mini';
+      const tone = document.getElementById('aiTone').value;
+      const aiBox = document.getElementById('aiReport');
+      const button = document.getElementById('aiCompareBtn');
+
+      if (!key) {
+        aiBox.textContent = 'Please enter your OpenAI API key first.';
+        return;
+      }
+
+      const context = buildComparisonContext(employeeId, month);
+
+      if (!context) {
+        aiBox.textContent = 'Please select a valid employee first.';
+        return;
+      }
+
+      if (!context.targetRecords.length && !context.previousRecords.length) {
+        aiBox.textContent = 'This employee has no records in the target month or previous month. AI comparison cannot be generated.';
+        return;
+      }
+
+      localStorage.setItem('rc_openai_key', key);
+      localStorage.setItem('rc_ai_model', model);
+
+      aiBox.textContent = 'AI is analyzing the target month and previous month records...';
+      button.classList.add('loading');
+      button.textContent = 'Analyzing...';
+
+      try {
+        const prompt = buildAIPrompt(context, tone);
+
+        const response = await fetch('https://api.openai.com/v1/responses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${key}`
+          },
+          body: JSON.stringify({
+            model,
+            input: prompt,
+            temperature: 0.35
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error?.message || 'OpenAI API request failed.');
+        }
+
+        const text = extractOpenAIText(data);
+        aiBox.textContent = text || 'AI returned a response, but no readable text was found.';
+      } catch (error) {
+        aiBox.textContent =
+`AI generation failed: ${error.message}
+
+Possible reasons:
+- The API key is incorrect.
+- The model name is unavailable.
+- The API key has no available credits.
+- The browser blocked the request.
+- For public deployment, direct frontend API calls may not be reliable.`;
+      } finally {
+        button.classList.remove('loading');
+        button.textContent = 'AI Direct Comparison';
+      }
     }
 
     function renderAll() {
