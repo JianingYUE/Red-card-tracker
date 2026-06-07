@@ -432,17 +432,56 @@
       </div>
     </summary>
     <section class="card ai-card">
-      <div class="warn-box small">
-        This single-file version calls OpenAI directly from the browser. It is fine for your own test, but for public staff use, move the API call to a backend proxy so your API key is not exposed.
+      <div class="notice small">
+        Default mode uses your local Ollama server. No OpenAI API key or paid tokens are required when using Ollama Local.
+        For local AI, keep Ollama running at <strong>http://localhost:11434</strong>.
       </div>
+
       <label>
-        OpenAI API Key
-        <input id="openaiKey" class="muted-input" type="password" placeholder="sk-..." />
+        AI Provider
+        <select id="aiProvider" onchange="renderAIProviderSettings()">
+          <option value="ollama">Ollama Local</option>
+          <option value="openai">OpenAI</option>
+        </select>
       </label>
-      <label>
-        AI Model
-        <input id="openaiModel" class="muted-input" value="gpt-4o-mini" />
-      </label>
+
+      <div id="ollamaSettings">
+        <label>
+          Ollama URL
+          <input id="ollamaUrl" class="muted-input" value="http://localhost:11434" />
+        </label>
+
+        <div class="row">
+          <label>
+            Vision Model
+            <input id="ollamaVisionModel" class="muted-input" value="qwen2.5vl:7b" />
+          </label>
+          <label>
+            Review Model
+            <input id="ollamaReviewModel" class="muted-input" value="gpt-oss:20b" />
+          </label>
+        </div>
+
+        <div class="warn-box small">
+          If the browser cannot connect to Ollama, run this in Terminal, then restart Ollama:
+          <br><code>launchctl setenv OLLAMA_ORIGINS "*"</code>
+        </div>
+      </div>
+
+      <div id="openaiSettings" class="hidden">
+        <div class="warn-box small">
+          OpenAI mode calls OpenAI directly from the browser. It is fine for your own test, but for public staff use, move the API call to a backend proxy so your API key is not exposed.
+        </div>
+        <label>
+          OpenAI API Key
+          <input id="openaiKey" class="muted-input" type="password" placeholder="sk-..." />
+        </label>
+        <label>
+          OpenAI Model
+          <input id="openaiModel" class="muted-input" value="gpt-4o-mini" />
+        </label>
+      </div>
+
       <label>
         AI Tone
         <select id="aiTone">
@@ -553,10 +592,19 @@ function uid() {
 
 window.addEventListener("DOMContentLoaded", () => {
   $("month").value = thisMonth;
+
+  $("aiProvider").value = localStorage.getItem("rc_ai_provider") || "ollama";
+  $("ollamaUrl").value = localStorage.getItem("rc_ollama_url") || "http://localhost:11434";
+  $("ollamaVisionModel").value = localStorage.getItem("rc_ollama_vision_model") || "qwen2.5vl:7b";
+  $("ollamaReviewModel").value = localStorage.getItem("rc_ollama_review_model") || "gpt-oss:20b";
+
   $("openaiKey").value = localStorage.getItem("rc_openai_key") || "";
   $("openaiModel").value = localStorage.getItem("rc_openai_model") || "gpt-4o-mini";
+
   $("supabaseUrl").value = localStorage.getItem("rc_supabase_url") || "";
   $("supabaseKey").value = localStorage.getItem("rc_supabase_key") || "";
+
+  renderAIProviderSettings();
   renderCategoryInputs();
   renderAll();
 });
@@ -565,6 +613,149 @@ function saveLocal() {
   localStorage.setItem(STORAGE_EMPLOYEES, JSON.stringify(employees));
   localStorage.setItem(STORAGE_RECORDS, JSON.stringify(records));
   renderAll();
+}
+
+function saveAISettings() {
+  localStorage.setItem("rc_ai_provider", $("aiProvider").value);
+  localStorage.setItem("rc_ollama_url", $("ollamaUrl").value.trim() || "http://localhost:11434");
+  localStorage.setItem("rc_ollama_vision_model", $("ollamaVisionModel").value.trim() || "qwen2.5vl:7b");
+  localStorage.setItem("rc_ollama_review_model", $("ollamaReviewModel").value.trim() || "gpt-oss:20b");
+  localStorage.setItem("rc_openai_key", $("openaiKey").value.trim());
+  localStorage.setItem("rc_openai_model", $("openaiModel").value.trim() || "gpt-4o-mini");
+}
+
+function renderAIProviderSettings() {
+  const provider = $("aiProvider").value;
+  $("ollamaSettings").classList.toggle("hidden", provider !== "ollama");
+  $("openaiSettings").classList.toggle("hidden", provider !== "openai");
+}
+
+function getOllamaBaseUrl() {
+  return ($("ollamaUrl").value.trim() || "http://localhost:11434").replace(/\/$/, "");
+}
+
+async function callOllamaVision(prompt, imageData) {
+  const url = getOllamaBaseUrl();
+  const model = $("ollamaVisionModel").value.trim() || "qwen2.5vl:7b";
+  const base64 = imageData.includes(",") ? imageData.split(",")[1] : imageData;
+
+  const response = await fetch(`${url}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model,
+      stream: false,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+          images: [base64]
+        }
+      ]
+    })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || "Ollama vision request failed. Check that Ollama is running and CORS is allowed.");
+  }
+
+  return data.message?.content || "";
+}
+
+async function callOllamaText(prompt) {
+  const url = getOllamaBaseUrl();
+  const model = $("ollamaReviewModel").value.trim() || "gpt-oss:20b";
+
+  const response = await fetch(`${url}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model,
+      stream: false,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ]
+    })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || "Ollama text request failed. Check that Ollama is running and CORS is allowed.");
+  }
+
+  return data.message?.content || "";
+}
+
+async function callOpenAIVision(prompt, imageData) {
+  const key = $("openaiKey").value.trim();
+  const model = $("openaiModel").value.trim() || "gpt-4o-mini";
+
+  if (!key) throw new Error("Please enter OpenAI API key in AI Settings.");
+
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${key}`
+    },
+    body: JSON.stringify({
+      model,
+      input: [{
+        role: "user",
+        content: [
+          { type: "input_text", text: prompt },
+          { type: "input_image", image_url: imageData }
+        ]
+      }],
+      temperature: 0.1
+    })
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error?.message || "OpenAI request failed.");
+  return extractText(data);
+}
+
+async function callOpenAIText(prompt) {
+  const key = $("openaiKey").value.trim();
+  const model = $("openaiModel").value.trim() || "gpt-4o-mini";
+
+  if (!key) throw new Error("Please enter OpenAI API key in AI Settings.");
+
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${key}`
+    },
+    body: JSON.stringify({
+      model,
+      input: prompt,
+      temperature: 0.3
+    })
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error?.message || "OpenAI request failed.");
+  return extractText(data);
+}
+
+async function callAIVision(prompt, imageData) {
+  saveAISettings();
+  return $("aiProvider").value === "ollama"
+    ? callOllamaVision(prompt, imageData)
+    : callOpenAIVision(prompt, imageData);
+}
+
+async function callAIText(prompt) {
+  saveAISettings();
+  return $("aiProvider").value === "ollama"
+    ? callOllamaText(prompt)
+    : callOpenAIText(prompt);
 }
 
 function renderCategoryInputs() {
@@ -694,17 +885,14 @@ function validateRecordInput() {
 }
 
 async function aiParsePhoto() {
-  const key = $("openaiKey").value.trim();
-  const model = $("openaiModel").value.trim() || "gpt-4o-mini";
+  const provider = $("aiProvider").value;
   const imageData = await getPhotoData();
 
-  if (!key) return alert("Please enter OpenAI API key in AI Settings.");
   if (!imageData) return alert("Please upload a red card photo first.");
 
-  localStorage.setItem("rc_openai_key", key);
-  localStorage.setItem("rc_openai_model", model);
+  saveAISettings();
 
-  $("photoPreview").innerHTML = `<img class="thumb" src="${imageData}" alt="Red card preview" /><div class="small">AI is parsing the red card...</div>`;
+  $("photoPreview").innerHTML = `<img class="thumb" src="${imageData}" alt="Red card preview" /><div class="small">AI is parsing the red card with ${provider === "ollama" ? "Ollama Local" : "OpenAI"}...</div>`;
 
   const prompt = `
 You are extracting data from a restaurant employee red card review photo.
@@ -743,32 +931,12 @@ Rules:
 `.trim();
 
   try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${key}`
-      },
-      body: JSON.stringify({
-        model,
-        input: [{
-          role: "user",
-          content: [
-            { type: "input_text", text: prompt },
-            { type: "input_image", image_url: imageData }
-          ]
-        }],
-        temperature: 0.1
-      })
-    });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error?.message || "OpenAI request failed.");
-
-    const text = extractText(data);
+    const text = await callAIVision(prompt, imageData);
     const parsed = safeParseJson(text);
 
-    if (!parsed) throw new Error("AI returned text, but it was not valid JSON.");
+    if (!parsed) {
+      throw new Error("AI returned text, but it was not valid JSON. Try again or switch model/provider.");
+    }
 
     if (parsed.employee_name) {
       const employee = getOrCreateEmployeeByName(String(parsed.employee_name).trim());
@@ -926,8 +1094,6 @@ async function aiCompare() {
   localCompare();
 
   const employee = getSelectedEmployee();
-  const key = $("openaiKey").value.trim();
-  const model = $("openaiModel").value.trim() || "gpt-4o-mini";
   const tone = $("aiTone").value;
 
   if (!employee) {
@@ -935,13 +1101,7 @@ async function aiCompare() {
     return;
   }
 
-  if (!key) {
-    $("aiReport").textContent = "Please enter OpenAI API key in AI Settings.";
-    return;
-  }
-
-  localStorage.setItem("rc_openai_key", key);
-  localStorage.setItem("rc_openai_model", model);
+  saveAISettings();
 
   const month = $("month").value;
   const prev = previousMonth(month);
@@ -971,7 +1131,7 @@ async function aiCompare() {
 
   $("aiCompareBtn").disabled = true;
   $("aiCompareBtn").textContent = "Analyzing...";
-  $("aiReport").textContent = "AI is comparing records...";
+  $("aiReport").textContent = `AI is comparing records with ${$("aiProvider").value === "ollama" ? "Ollama Local" : "OpenAI"}...`;
 
   try {
     const prompt = `
@@ -996,23 +1156,7 @@ Data:
 ${JSON.stringify(context, null, 2)}
 `.trim();
 
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${key}`
-      },
-      body: JSON.stringify({
-        model,
-        input: prompt,
-        temperature: 0.3
-      })
-    });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error?.message || "OpenAI request failed.");
-
-    const text = extractText(data);
+    const text = await callAIText(prompt);
     $("aiReport").textContent = text || "AI returned no readable text.";
 
     const latestRecord = records
